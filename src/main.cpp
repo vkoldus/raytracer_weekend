@@ -1,11 +1,14 @@
 #include <iostream>
-
+#include <thread>
 
 #include "imgui.h"
 #include "bindings/imgui_impl_glfw.h"
 #include "bindings/imgui_impl_opengl2.h"
 
 #include <GLFW/glfw3.h>
+
+#include "images.h"
+#include "path_tracer_main.h"
 
 static void glfw_error_callback(int error, const char *description)
 {
@@ -27,6 +30,11 @@ struct VectInt2 {
 VectFloat4 clear_color = {0.45f, 0.55f, 0.60f, 1.00f};
 VectInt2 window_size = {1280, 720};
 
+float progress = 0.0;
+bool cancel_rendering = false;
+bool rendering_finished = false;
+std::thread rendering_thread;
+
 int main()
 {
     glfwSetErrorCallback(glfw_error_callback);
@@ -34,7 +42,7 @@ int main()
         return 1;
 
     // Create window with graphics context
-    GLFWwindow *window = glfwCreateWindow(window_size.x, window_size.y, "Dear ImGui GLFW+OpenGL2 example", nullptr,
+    GLFWwindow *window = glfwCreateWindow(window_size.x, window_size.y, "Path tracing in one weekend", nullptr,
                                           nullptr);
     if (window == nullptr)
         return 1;
@@ -61,6 +69,8 @@ int main()
 
     bool show_demo_window = true;
 
+    auto image1 = create_image_with_texture(256, 256);
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();
@@ -69,25 +79,49 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        if (show_demo_window)
-            ImGui::ShowDemoWindow(&show_demo_window); {
-            static float f = 0.0f;
-            static int counter = 0;
+        if (rendering_finished)
+        {
+            upload_texture(image1);
+        }
 
-            ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        ImGui::Begin("OpenGL Texture Text");
+        ImVec2 availableSize = ImGui::GetContentRegionAvail();
+        availableSize.y -= 25;
+        ImGui::Image((void *) (intptr_t) image1.gl_texture, availableSize);
+        ImGui::ProgressBar(progress, ImVec2(ImGui::GetFontSize() * 25, 0.0f));
+        ImGui::End();
+        ImGui::PopStyleVar();
+        ImGui::PopStyleVar();
 
-            ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
-            // ImGui::Checkbox("Another Window", &show_another_window);
 
-            ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-            ImGui::ColorEdit3("clear color", (float *) &clear_color); // Edit 3 floats representing a color
+        //
+        {
+            //     static float f = 0.0f;
+            //     static int counter = 0;
+            //
+            ImGui::Begin("Config"); // Create a window called "Hello, world!" and append into it.
+            //
+            //     ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
+            //     ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
+            //     // ImGui::Checkbox("Another Window", &show_another_window);
+            //
+            //     ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
+            //     ImGui::ColorEdit3("clear color", (float *) &clear_color); // Edit 3 floats representing a color
+            //
+            if (ImGui::Button("Render"))
+            {
+                if (rendering_thread.joinable())
+                {
+                    cancel_rendering = true;
+                    rendering_thread.join();
+                }
+                cancel_rendering = false;
 
-            if (ImGui::Button("Button"))
-                // Buttons return true when clicked (most widgets return true when edited/activated)
-                counter++;
-            ImGui::SameLine();
-            ImGui::Text("counter = %d", counter);
+                rendering_thread = std::thread(render, &progress, &cancel_rendering, &rendering_finished,
+                                               image1.buffer);
+            }
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
             ImGui::End();
@@ -108,6 +142,11 @@ int main()
         glfwMakeContextCurrent(window);
         glfwSwapBuffers(window);
     }
+
+    cancel_rendering = true;
+    rendering_thread.join();
+
+    delete_image_with_texture(image1);
 
     ImGui_ImplOpenGL2_Shutdown();
     ImGui_ImplGlfw_Shutdown();
