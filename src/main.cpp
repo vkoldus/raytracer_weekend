@@ -1,11 +1,11 @@
+#include <cmath>
 #include <iostream>
 #include <thread>
+#include <GLFW/glfw3.h>
 
 #include "imgui.h"
 #include "bindings/imgui_impl_glfw.h"
 #include "bindings/imgui_impl_opengl2.h"
-
-#include <GLFW/glfw3.h>
 
 #include "images.h"
 #include "path_tracer_main.h"
@@ -29,6 +29,11 @@ struct VectInt2 {
 
 VectFloat4 clear_color = {0.45f, 0.55f, 0.60f, 1.00f};
 VectInt2 window_size = {1280, 720};
+
+auto aspect_ratio = 16.0 / 9.0;
+int image_width = 400;
+int image_height = fmax(1, image_width / aspect_ratio);
+
 
 ImageWithTexture image1;
 
@@ -72,7 +77,7 @@ int main()
 
     io.Fonts->AddFontDefault();
 
-    image1 = create_image_with_texture(256, 256);
+    image1 = create_image_with_texture(image_width, image_height);
 
     on_render_pushed();
 
@@ -91,9 +96,9 @@ int main()
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
         ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        ImGui::Begin("OpenGL Texture Text");
+        ImGui::Begin("Path tracer output");
         ImVec2 availableSize = ImGui::GetContentRegionAvail();
-        availableSize.y -= 25;
+        availableSize.y = availableSize.x / aspect_ratio;
         ImGui::Image((void *) (intptr_t) image1.gl_texture, availableSize);
         ImGui::ProgressBar(progress, ImVec2(ImGui::GetFontSize() * 25, 0.0f));
         ImGui::End();
@@ -165,5 +170,5 @@ void on_render_pushed()
     cancel_rendering = false;
 
     rendering_thread = std::thread(render, &progress, &cancel_rendering, &rendering_finished,
-                                   image1.buffer);
+                                   image1.buffer, image_width, image_height);
 }
