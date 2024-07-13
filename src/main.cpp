@@ -30,10 +30,14 @@ struct VectInt2 {
 VectFloat4 clear_color = {0.45f, 0.55f, 0.60f, 1.00f};
 VectInt2 window_size = {1280, 720};
 
+ImageWithTexture image1;
+
 float progress = 0.0;
 bool cancel_rendering = false;
 bool rendering_finished = false;
 std::thread rendering_thread;
+
+void on_render_pushed();
 
 int main()
 {
@@ -46,6 +50,7 @@ int main()
                                           nullptr);
     if (window == nullptr)
         return 1;
+
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
@@ -67,9 +72,9 @@ int main()
 
     io.Fonts->AddFontDefault();
 
-    bool show_demo_window = true;
+    image1 = create_image_with_texture(256, 256);
 
-    auto image1 = create_image_with_texture(256, 256);
+    on_render_pushed();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -112,15 +117,7 @@ int main()
             //
             if (ImGui::Button("Render"))
             {
-                if (rendering_thread.joinable())
-                {
-                    cancel_rendering = true;
-                    rendering_thread.join();
-                }
-                cancel_rendering = false;
-
-                rendering_thread = std::thread(render, &progress, &cancel_rendering, &rendering_finished,
-                                               image1.buffer);
+                on_render_pushed();
             }
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
@@ -155,4 +152,18 @@ int main()
     glfwTerminate();
 
     return 0;
+}
+
+
+void on_render_pushed()
+{
+    if (rendering_thread.joinable())
+    {
+        cancel_rendering = true;
+        rendering_thread.join();
+    }
+    cancel_rendering = false;
+
+    rendering_thread = std::thread(render, &progress, &cancel_rendering, &rendering_finished,
+                                   image1.buffer);
 }

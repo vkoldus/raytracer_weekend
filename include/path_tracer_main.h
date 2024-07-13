@@ -8,8 +8,11 @@
 #include <thread>
 #include <chrono>
 #include <iostream>
+#include <Eigen/Dense>
 
 using namespace std::chrono_literals;
+using Eigen::Vector3f;
+using Eigen::Vector3i;
 
 void render(float *progress_fraction, bool *cancel, bool *finished, uint32_t *buffer)
 {
@@ -17,15 +20,9 @@ void render(float *progress_fraction, bool *cancel, bool *finished, uint32_t *bu
     {
         for (int i = 0; i < 256; i++)
         {
-            auto r = double(i) / (256 - 1);
-            auto g = double(j) / (256 - 1);
-            auto b = 0.0;
-
-            int ir = int(255.999 * r);
-            int ig = int(255.999 * g);
-            int ib = int(255.999 * b);
-
-            buffer[j * 256 + i] = 0xff << 24 | ib << 16 | ig << 8 | ir;
+            Vector3i color = Vector3f(255.999 * double(i) / (256 - 1), 255.999 * double(j) / (256 - 1), 0).cast<
+                int>();
+            buffer[j * 256 + i] = 0xff << 24 | color(2) << 16 | color(1) << 8 | color(0);
 
             if (*cancel)
             {
