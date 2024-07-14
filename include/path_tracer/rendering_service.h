@@ -26,10 +26,8 @@ struct RenderingService {
 
 
     {
-        auto x = 0.0;
-
         world = {
-            std::make_shared<Sphere>(Point3(x, 0, -1), 0.5),
+            std::make_shared<Sphere>(Point3(0, 0, -1), 0.5),
             std::make_shared<Sphere>(Point3(0, -100.5, -1), 100),
         };
     }

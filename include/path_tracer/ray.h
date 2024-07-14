@@ -22,6 +22,7 @@ public:
     Point3 p;
     Vector3 normal;
     fp_t t;
+    bool front_face;
 };
 
 #endif //RAY_H

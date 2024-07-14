@@ -10,7 +10,7 @@
 
 class Hittable {
 public:
-    [[nodiscard]] virtual bool hit(const Ray &r, HitInfo &hit) const = 0;
+    [[nodiscard]] virtual bool hit(const Ray &r, const Interval &interval, HitInfo &hit) const = 0;
 
     virtual ~Hittable() = default;
 };
@@ -24,7 +24,7 @@ public:
     {
     }
 
-    virtual bool hit(const Ray &r, HitInfo &hit) const override
+    virtual bool hit(const Ray &r, const Interval &ray_interval, HitInfo &hit) const override
     {
         // Analytical solution of intersection with a sphere
         // auto oc = center - r.origin;
@@ -43,25 +43,37 @@ public:
 
         if (disc >= 0)
         {
-            // We have a solution. TODO: Pick the one closer to the camera.
             // return (-b - sqrt(disc)) / (2 * a);
             auto t = (h - sqrt(disc)) / a;
-
-            if (t < 0)
+            if (!ray_interval.surrounds(t))
             {
-                // No hits behind the camera are interesting.
+                t = (h + sqrt(disc)) / a;
+            }
+
+            if (!ray_interval.surrounds(t))
+            {
                 return false;
             }
 
             hit.p = r.at(t);
             hit.t = t;
-            hit.normal = (hit.p - center) / radius;
+
+            // It's our responsibility to make sure the normal always points against the ray
+            Vector3 outward_normal = (hit.p - center) / radius;
+            if (outward_normal.dot(r.direction) >= 0)
+            {
+                hit.front_face = false;
+                hit.normal = -outward_normal;
+            } else
+            {
+                hit.front_face = true;
+                hit.normal = outward_normal;
+            }
 
             return true;
         } else
         {
             return false;
-            // return -1;
         }
     }
 };

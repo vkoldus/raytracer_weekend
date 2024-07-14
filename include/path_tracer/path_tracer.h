@@ -21,17 +21,25 @@ using World = std::vector<std::shared_ptr<Hittable> >;
 Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ray &ray)
 {
     HitInfo hit;
+    Interval ray_interval = {0, +Infinity};
+
     for (auto o: objects)
     {
-        if (o->hit(ray, hit))
+        if (o->hit(ray, ray_interval, hit))
         {
-            return 0.5 * Color(hit.normal[0] + 1, hit.normal[1] + 1, hit.normal[2] + 1);
+            ray_interval.max = hit.t;
         }
     }
 
-    // Gradient for background
-    double a = 0.5 * (ray.direction.normalized()[1] + 1);
-    return lerp(a, Color(1.0, 1.0, 1.0), Color(.5, 0.7, 1.0));
+    if (ray_interval.max < Infinity)
+    {
+        return 0.5 * Color(hit.normal[0] + 1, hit.normal[1] + 1, hit.normal[2] + 1);
+    } else
+    {
+        // Gradient for background
+        double a = 0.5 * (ray.direction.normalized()[1] + 1);
+        return lerp(a, Color(1.0, 1.0, 1.0), Color(.5, 0.7, 1.0));
+    }
 }
 
 void render(AppState *app_state, const World *world, Camera *camera, uint32_t *buffer)
