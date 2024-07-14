@@ -7,8 +7,6 @@
 #include "bindings/imgui_impl_glfw.h"
 #include "bindings/imgui_impl_opengl2.h"
 
-#include "images.h"
-#include "path_tracer/path_tracer.h"
 #include "state/app_state.h"
 #include "ui/rendering_window.h"
 #include "ui/config_window.h"
@@ -28,7 +26,7 @@ int main()
     AppState app_state;
 
     // Create window with graphics context
-    GLFWwindow *window = glfwCreateWindow(app_state.window_size.x, app_state.window_size.y,
+    GLFWwindow *window = glfwCreateWindow(app_state.window_size[0], app_state.window_size[1],
                                           "Path tracing in one weekend", nullptr,
                                           nullptr);
     if (window == nullptr)
@@ -78,10 +76,10 @@ int main()
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
-        glClearColor(app_state.clear_color.x * app_state.clear_color.w,
-                     app_state.clear_color.y * app_state.clear_color.w,
-                     app_state.clear_color.z * app_state.clear_color.w,
-                     app_state.clear_color.w);
+        glClearColor(app_state.clear_color[0] * app_state.clear_color[3],
+                     app_state.clear_color[1] * app_state.clear_color[3],
+                     app_state.clear_color[2] * app_state.clear_color[3],
+                     app_state.clear_color[3]);
         glClear(GL_COLOR_BUFFER_BIT);
 
         ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());

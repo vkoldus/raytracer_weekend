@@ -6,12 +6,7 @@
 #define CAMERA_H
 
 
-#include <chrono>
-#include <Eigen/Dense>
-
 #include "types.h"
-
-using Eigen::Vector3i;
 
 struct Viewport {
     fp_t height;

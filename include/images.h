@@ -5,7 +5,6 @@
 #ifndef IMAGES_H
 #define IMAGES_H
 
-#include <memory>
 #include <GLFW/glfw3.h>
 
 struct ImageWithTexture {

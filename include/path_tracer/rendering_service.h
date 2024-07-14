@@ -7,6 +7,7 @@
 
 #include "images.h"
 #include "state/app_state.h"
+#include "path_tracer/path_tracer.h"
 
 struct RenderingService {
     ImageWithTexture image1;

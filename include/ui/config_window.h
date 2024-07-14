@@ -6,7 +6,6 @@
 #define CONFIG_WINDOW_H
 
 #include <imgui.h>
-#include "images.h"
 #include "state/app_state.h"
 #include "path_tracer/rendering_service.h"
 

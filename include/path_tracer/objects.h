@@ -4,7 +4,8 @@
 
 #ifndef OBJECTS_H
 #define OBJECTS_H
-#include "../types.h"
+
+#include "types.h"
 #include "ray.h"
 
 class Hittable {
