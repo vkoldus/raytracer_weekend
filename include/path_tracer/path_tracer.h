@@ -10,8 +10,8 @@
 #include <memory>
 
 
-#include "types.h"
-#include "interpolation.h"
+#include "../types.h"
+#include "../interpolation.h"
 #include "camera.h"
 #include "objects.h"
 

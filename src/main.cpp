@@ -8,42 +8,16 @@
 #include "bindings/imgui_impl_opengl2.h"
 
 #include "images.h"
-#include "path_tracer.h"
+#include "path_tracer/path_tracer.h"
+#include "state/app_state.h"
+#include "ui/rendering_window.h"
+#include "ui/config_window.h"
+#include "path_tracer/rendering_service.h"
 
 static void glfw_error_callback(int error, const char *description)
 {
     fprintf(stderr, "GLFW Error %d: %s\n", error, description);
 }
-
-struct VectFloat4 {
-    float x;
-    float y;
-    float z;
-    float w;
-};
-
-struct VectInt2 {
-    int x;
-    int y;
-};
-
-VectFloat4 clear_color = {0.45f, 0.55f, 0.60f, 1.00f};
-VectInt2 window_size = {1280, 720};
-
-auto aspect_ratio = 16.0 / 9.0;
-int image_width = 400;
-int image_height = fmax(1, image_width / aspect_ratio);
-
-
-ImageWithTexture image1;
-
-float progress = 0.0;
-bool cancel_rendering = false;
-bool rendering_finished = false;
-bool live_render = false;
-std::thread rendering_thread;
-
-void on_render_pushed();
 
 int main()
 {
@@ -51,14 +25,19 @@ int main()
     if (!glfwInit())
         return 1;
 
+    AppState app_state;
+
     // Create window with graphics context
-    GLFWwindow *window = glfwCreateWindow(window_size.x, window_size.y, "Path tracing in one weekend", nullptr,
+    GLFWwindow *window = glfwCreateWindow(app_state.window_size.x, app_state.window_size.y,
+                                          "Path tracing in one weekend", nullptr,
                                           nullptr);
     if (window == nullptr)
         return 1;
 
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
+
+    RenderingService rendering_service(app_state);
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
@@ -78,9 +57,7 @@ int main()
 
     io.Fonts->AddFontDefault();
 
-    image1 = create_image_with_texture(image_width, image_height);
-
-    on_render_pushed();
+    rendering_service.render_sync();
 
     while (!glfwWindowShouldClose(window))
     {
@@ -90,53 +67,10 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        if (rendering_finished)
-        {
-            upload_texture(image1);
-        }
+        rendering_service.loop_hook();
 
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        ImGui::Begin("Path tracer output");
-        ImVec2 availableSize = ImGui::GetContentRegionAvail();
-        availableSize.y = availableSize.x / aspect_ratio;
-        ImGui::Image((void *) (intptr_t) image1.gl_texture, availableSize);
-        ImGui::ProgressBar(progress, ImVec2(ImGui::GetFontSize() * 25, 0.0f));
-        ImGui::End();
-        ImGui::PopStyleVar();
-        ImGui::PopStyleVar();
-
-
-        //
-        {
-            //     static float f = 0.0f;
-            //     static int counter = 0;
-            //
-            ImGui::Begin("Config"); // Create a window called "Hello, world!" and append into it.
-            //
-            //     ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
-            ImGui::Checkbox("Live render", &live_render); // Edit bools storing our window open/close state
-            //     // ImGui::Checkbox("Another Window", &show_another_window);
-            //
-            //     ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-            //     ImGui::ColorEdit3("clear color", (float *) &clear_color); // Edit 3 floats representing a color
-            //
-
-            if (live_render)
-            {
-                render(&progress, &cancel_rendering, &rendering_finished,
-                       image1.buffer, image_width, image_height);
-            } else
-            {
-                if (ImGui::Button("Render"))
-                {
-                    on_render_pushed();
-                }
-            }
-
-            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
-            ImGui::End();
-        }
+        rendering_window(app_state, rendering_service);
+        config_window(app_state, rendering_service, io);
 
         // Rendering
         ImGui::Render();
@@ -144,8 +78,10 @@ int main()
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w,
-                     clear_color.w);
+        glClearColor(app_state.clear_color.x * app_state.clear_color.w,
+                     app_state.clear_color.y * app_state.clear_color.w,
+                     app_state.clear_color.z * app_state.clear_color.w,
+                     app_state.clear_color.w);
         glClear(GL_COLOR_BUFFER_BIT);
 
         ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
@@ -154,11 +90,7 @@ int main()
         glfwSwapBuffers(window);
     }
 
-    cancel_rendering = true;
-    rendering_thread.join();
-
-    delete_image_with_texture(image1);
-
+    rendering_service.shutdown();
     ImGui_ImplOpenGL2_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -166,18 +98,4 @@ int main()
     glfwTerminate();
 
     return 0;
-}
-
-
-void on_render_pushed()
-{
-    if (rendering_thread.joinable())
-    {
-        cancel_rendering = true;
-        rendering_thread.join();
-    }
-    cancel_rendering = false;
-
-    rendering_thread = std::thread(render, &progress, &cancel_rendering, &rendering_finished,
-                                   image1.buffer, image_width, image_height);
 }

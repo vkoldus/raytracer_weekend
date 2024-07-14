@@ -5,7 +5,7 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include "types.h"
+#include "../types.h"
 
 struct Ray {
     Point3 origin;
