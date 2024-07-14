@@ -14,7 +14,9 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
     ImGui::Begin("Config");
     //
     //     ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
-    ImGui::Checkbox("Live render", &app_state.live_render); // Edit bools storing our window open/close state
+    ImGui::Checkbox("Live render", &app_state.live_render);
+    ImGui::Checkbox("Move camera", &app_state.move_camera);
+    ImGui::Checkbox("Move object", &app_state.move_object);
     //     // ImGui::Checkbox("Another Window", &show_another_window);
     //
     //     ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f

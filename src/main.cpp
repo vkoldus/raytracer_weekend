@@ -35,8 +35,6 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // Enable vsync
 
-    RenderingService rendering_service(app_state);
-
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -55,7 +53,9 @@ int main()
 
     io.Fonts->AddFontDefault();
 
+    RenderingService rendering_service(app_state);
     rendering_service.render_sync();
+
 
     while (!glfwWindowShouldClose(window))
     {
@@ -76,9 +76,9 @@ int main()
         int display_w, display_h;
         glfwGetFramebufferSize(window, &display_w, &display_h);
         glViewport(0, 0, display_w, display_h);
-        glClearColor(app_state.clear_color[0] * app_state.clear_color[3],
-                     app_state.clear_color[1] * app_state.clear_color[3],
-                     app_state.clear_color[2] * app_state.clear_color[3],
+        glClearColor(app_state.clear_color[0],
+                     app_state.clear_color[1],
+                     app_state.clear_color[2],
                      app_state.clear_color[3]);
         glClear(GL_COLOR_BUFFER_BIT);
 
