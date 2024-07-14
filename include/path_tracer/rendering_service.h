@@ -5,6 +5,7 @@
 #ifndef RENDERING_SERVICE_H
 #define RENDERING_SERVICE_H
 
+#include <png.h>
 #include "images.h"
 #include "state/app_state.h"
 #include "path_tracer/path_tracer.h"
@@ -76,6 +77,41 @@ struct RenderingService {
     {
         cancel_render();
         delete_image_with_texture(image1);
+    }
+
+    void save_next_image_to(const std::string &path)
+    {
+        auto fp = fopen(path.c_str(), "wb");
+        png_structp png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+        png_infop info_ptr = png_create_info_struct(png_ptr);
+
+        png_set_IHDR(png_ptr,
+                     info_ptr,
+                     image1.width,
+                     image1.height,
+                     8,
+                     PNG_COLOR_TYPE_RGB,
+                     PNG_INTERLACE_NONE,
+                     PNG_COMPRESSION_TYPE_DEFAULT,
+                     PNG_FILTER_TYPE_DEFAULT);
+
+        png_byte **row_pointers = (png_byte **) png_malloc(png_ptr, image1.height * sizeof(png_byte *));
+        for (int y = 0; y < image1.height; y++)
+        {
+            png_byte *row = (png_byte *) png_malloc(png_ptr, sizeof(uint8_t) * image1.width * 24);
+            row_pointers[y] = row;
+            for (int x = 0; x < image1.width; x++)
+            {
+                *row++ = image1.buffer[image1.width * y + x] & 0xff;
+                *row++ = (image1.buffer[image1.width * y + x] & 0xff00) >> 8;
+                *row++ = (image1.buffer[image1.width * y + x] & 0xff0000) >> 16;
+            }
+        }
+
+        png_init_io(png_ptr, fp);
+        png_set_rows(png_ptr, info_ptr, row_pointers);
+        png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
+        fclose(fp);
     }
 
     auto gl_texture() const

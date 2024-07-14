@@ -35,6 +35,10 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
         }
     }
 
+    if (ImGui::Button("Save image"))
+    {
+        rendering_service.save_next_image_to("/Users/vaclav/Desktop/ray_tracer.png");
+    }
     ImGui::Text("%.3f ms/f (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
     ImGui::End();
 }
