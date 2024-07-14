@@ -9,7 +9,7 @@ find_package(Eigen3)
 
 add_executable(pathtracing src/main.cpp src/bindings/imgui_impl_glfw.cpp src/bindings/imgui_impl_opengl2.cpp
         include/images.h
-        include/path_tracer_main.h
+        include/path_tracer.h
         include/ray.h
         include/interpolation.h
         include/camera.h

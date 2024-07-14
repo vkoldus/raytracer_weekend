@@ -8,7 +8,7 @@
 #include "bindings/imgui_impl_opengl2.h"
 
 #include "images.h"
-#include "path_tracer_main.h"
+#include "path_tracer.h"
 
 static void glfw_error_callback(int error, const char *description)
 {
