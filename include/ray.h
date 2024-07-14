@@ -5,18 +5,23 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include <Eigen/Dense>
-
-using Eigen::Vector3d;
+#include "types.h"
 
 struct Ray {
-    Vector3d origin;
-    Vector3d direction;
+    Point3 origin;
+    Vector3 direction;
 
-    Vector3d at(double t) const
+    Point3 at(fp_t t) const
     {
-        return orig + t * dir;
+        return origin + t * direction;
     }
+};
+
+class HitInfo {
+public:
+    Point3 p;
+    Vector3 normal;
+    fp_t t;
 };
 
 #endif //RAY_H

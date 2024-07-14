@@ -13,6 +13,8 @@ add_executable(pathtracing src/main.cpp src/bindings/imgui_impl_glfw.cpp src/bin
         include/ray.h
         include/interpolation.h
         include/camera.h
+        include/types.h
+        include/objects.h
 )
 
 include_directories(include)
