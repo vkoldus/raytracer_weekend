@@ -18,18 +18,28 @@
 using namespace std::chrono_literals;
 using World = std::vector<std::shared_ptr<Hittable> >;
 
-std::vector<Vector2> aa_sampling_offsets = {
-    Vector2::Random() / 2,
-    Vector2::Random() / 2,
-    Vector2::Random() / 2,
-    Vector2::Random() / 2,
-    Vector2::Random() / 2,
-    Vector2::Random() / 2,
-    Vector2::Random() / 2,
-    Vector2::Random() / 2,
-    Vector2::Random() / 2,
-    Vector2::Random() / 2,
-};
+std::vector<Vector2> aa_sampling_offsets;
+
+void reinitialize_aa_if_needed(const AppState &app_state)
+{
+    if (app_state.live_render && aa_sampling_offsets.size() != 4)
+    {
+        aa_sampling_offsets.clear();
+        for (int i = 0; i < 4; i++)
+        {
+            aa_sampling_offsets.push_back(Vector2::Random() / 2);
+        }
+    }
+
+    if (!app_state.live_render && aa_sampling_offsets.size() != 100)
+    {
+        aa_sampling_offsets.clear();
+        for (int i = 0; i < 100; i++)
+        {
+            aa_sampling_offsets.push_back(Vector2::Random() / 2);
+        }
+    }
+}
 
 
 Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ray &ray)
@@ -56,8 +66,11 @@ Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ra
     }
 }
 
+
 void render(AppState *app_state, const World *world, Camera *camera, uint32_t *buffer)
 {
+    reinitialize_aa_if_needed(*app_state);
+
     auto pixel_delta_u = camera->viewport.u / app_state->image_width;
     auto pixel_delta_v = camera->viewport.v / app_state->image_height;
 
