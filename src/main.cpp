@@ -40,6 +40,7 @@ ImageWithTexture image1;
 float progress = 0.0;
 bool cancel_rendering = false;
 bool rendering_finished = false;
+bool live_render = false;
 std::thread rendering_thread;
 
 void on_render_pushed();
@@ -114,15 +115,23 @@ int main()
             ImGui::Begin("Config"); // Create a window called "Hello, world!" and append into it.
             //
             //     ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
-            //     ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
+            ImGui::Checkbox("Live render", &live_render); // Edit bools storing our window open/close state
             //     // ImGui::Checkbox("Another Window", &show_another_window);
             //
             //     ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
             //     ImGui::ColorEdit3("clear color", (float *) &clear_color); // Edit 3 floats representing a color
             //
-            if (ImGui::Button("Render"))
+
+            if (live_render)
             {
-                on_render_pushed();
+                render(&progress, &cancel_rendering, &rendering_finished,
+                       image1.buffer, image_width, image_height);
+            } else
+            {
+                if (ImGui::Button("Render"))
+                {
+                    on_render_pushed();
+                }
             }
 
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
