@@ -46,6 +46,13 @@ public:
             // We have a solution. TODO: Pick the one closer to the camera.
             // return (-b - sqrt(disc)) / (2 * a);
             auto t = (h - sqrt(disc)) / a;
+
+            if (t < 0)
+            {
+                // No hits behind the camera are interesting.
+                return false;
+            }
+
             hit.p = r.at(t);
             hit.t = t;
             hit.normal = (hit.p - center) / radius;
