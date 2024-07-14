@@ -19,6 +19,7 @@ struct AppState {
     bool live_render = false;
     bool move_camera = false;
     bool move_object = false;
+    bool antialiasing = true;
 
     // Rendering status
     float progress = 0.0;

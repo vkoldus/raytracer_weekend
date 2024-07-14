@@ -18,6 +18,20 @@
 using namespace std::chrono_literals;
 using World = std::vector<std::shared_ptr<Hittable> >;
 
+std::vector<Vector2> aa_sampling_offsets = {
+    Vector2::Random() / 2,
+    Vector2::Random() / 2,
+    Vector2::Random() / 2,
+    Vector2::Random() / 2,
+    Vector2::Random() / 2,
+    Vector2::Random() / 2,
+    Vector2::Random() / 2,
+    Vector2::Random() / 2,
+    Vector2::Random() / 2,
+    Vector2::Random() / 2,
+};
+
+
 Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ray &ray)
 {
     HitInfo hit;
@@ -50,17 +64,36 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
     // Pixel coordinates are defined in their centers
     auto top_left_pixel = camera->viewport_top_left + (pixel_delta_u + pixel_delta_v) / 2;
 
-
+    Vector3i color;
     for (int j = 0; j < app_state->image_height; j++)
     {
         for (int i = 0; i < app_state->image_width; i++)
         {
             auto pixel_center = top_left_pixel + i * pixel_delta_u + j * pixel_delta_v;
-            Ray ray{camera->center, pixel_center - camera->center};
 
-            Vector3i color = (ray_color(*world, ray) * 255).cast<int>();
+            if (app_state->antialiasing)
+            {
+                color = {0, 0, 0};
+
+                for (int i = 0; i < aa_sampling_offsets.size(); i++)
+                {
+                    Ray ray{
+                        camera->center,
+                        (pixel_center + Vector3d{
+                             pixel_delta_u[0] * aa_sampling_offsets[i][0], pixel_delta_v[1] * aa_sampling_offsets[i][1],
+                             0.0
+                         }) - camera->center
+                    };
+                    color += (ray_color(*world, ray) * 255).cast<int>();
+                }
+                color = (color / aa_sampling_offsets.size()).cast<int>();
+            } else
+            {
+                Ray ray{camera->center, pixel_center - camera->center};
+                color = (ray_color(*world, ray) * 255).cast<int>();
+            }
+
             buffer[j * app_state->image_width + i] = 0xff << 24 | color(2) << 16 | color(1) << 8 | color(0);
-
 
             if (app_state->cancel_rendering)
             {

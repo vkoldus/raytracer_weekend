@@ -17,6 +17,12 @@ struct Ray {
     }
 };
 
+static Ray operator+(const Ray &l, const Vector3 &r)
+{
+    return {l.origin, l.direction + r};
+}
+
+
 class HitInfo {
 public:
     Point3 p;

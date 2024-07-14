@@ -17,6 +17,7 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
     ImGui::Checkbox("Live render", &app_state.live_render);
     ImGui::Checkbox("Move camera", &app_state.move_camera);
     ImGui::Checkbox("Move object", &app_state.move_object);
+    ImGui::Checkbox("Anti-aliasing", &app_state.antialiasing);
     //     // ImGui::Checkbox("Another Window", &show_another_window);
     //
     //     ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
@@ -34,7 +35,7 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
         }
     }
 
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+    ImGui::Text("%.3f ms/f (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
     ImGui::End();
 }
 #endif //CONFIG_WINDOW_H

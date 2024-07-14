@@ -11,9 +11,11 @@
 using Eigen::Vector3d;
 using Eigen::Vector3f;
 using Eigen::Vector3i;
+using Eigen::Vector2d;
 
 using Point3 = Vector3d;
 using Vector3 = Vector3d;
+using Vector2 = Vector2d;
 using Color = Vector3d;
 
 using fp_t = double;
