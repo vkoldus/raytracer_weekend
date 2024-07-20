@@ -21,6 +21,7 @@ add_executable(pathtracing src/main.cpp src/bindings/imgui_impl_glfw.cpp src/bin
         include/ui/config_window.h
         include/path_tracer/rendering_service.h
         include/consts.h
+        include/random.h
 )
 
 include_directories(include)

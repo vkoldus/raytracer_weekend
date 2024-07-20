@@ -14,11 +14,14 @@
 #include "interpolation.h"
 #include "camera.h"
 #include "objects.h"
+#include "random.h"
 
 using namespace std::chrono_literals;
 using World = std::vector<std::shared_ptr<Hittable> >;
 
 std::vector<Vector2> aa_sampling_offsets;
+
+auto hi_q_aa_samples = 100;
 
 void reinitialize_aa_if_needed(const AppState &app_state)
 {
@@ -31,10 +34,10 @@ void reinitialize_aa_if_needed(const AppState &app_state)
         }
     }
 
-    if (!app_state.live_render && aa_sampling_offsets.size() != 100)
+    if (!app_state.live_render && aa_sampling_offsets.size() != hi_q_aa_samples)
     {
         aa_sampling_offsets.clear();
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < hi_q_aa_samples; i++)
         {
             aa_sampling_offsets.push_back(Vector2::Random() / 2);
         }
@@ -42,10 +45,10 @@ void reinitialize_aa_if_needed(const AppState &app_state)
 }
 
 
-Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ray &ray)
+Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ray &ray, int depth)
 {
     HitInfo hit;
-    Interval ray_interval = {0, +Infinity};
+    Interval ray_interval = {0.001, +Infinity};
 
     for (auto o: objects)
     {
@@ -55,9 +58,10 @@ Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ra
         }
     }
 
-    if (ray_interval.max < Infinity)
+    if (depth > 0 && ray_interval.max < Infinity)
     {
-        return 0.5 * Color(hit.normal[0] + 1, hit.normal[1] + 1, hit.normal[2] + 1);
+        return 0.5 * ray_color(objects, Ray{hit.p, random_on_hemisphere(hit.normal)}, depth - 1);
+        // return 0.5 * Color(hit.normal[0] + 1, hit.normal[1] + 1, hit.normal[2] + 1);
     } else
     {
         // Gradient for background
@@ -70,6 +74,8 @@ Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ra
 void render(AppState *app_state, const World *world, Camera *camera, uint32_t *buffer)
 {
     reinitialize_aa_if_needed(*app_state);
+    int max_depth = 20;
+
 
     auto pixel_delta_u = camera->viewport.u / app_state->image_width;
     auto pixel_delta_v = camera->viewport.v / app_state->image_height;
@@ -97,13 +103,13 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
                              0.0
                          }) - camera->center
                     };
-                    color += (ray_color(*world, ray) * 255).cast<int>();
+                    color += (ray_color(*world, ray, max_depth) * 255).cast<int>();
                 }
                 color = (color / aa_sampling_offsets.size()).cast<int>();
             } else
             {
                 Ray ray{camera->center, pixel_center - camera->center};
-                color = (ray_color(*world, ray) * 255).cast<int>();
+                color = (ray_color(*world, ray, max_depth) * 255).cast<int>();
             }
 
             buffer[j * app_state->image_width + i] = 0xff << 24 | color(2) << 16 | color(1) << 8 | color(0);
