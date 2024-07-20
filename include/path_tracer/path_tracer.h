@@ -50,6 +50,11 @@ Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ra
     HitInfo hit;
     Interval ray_interval = {0.001, +Infinity};
 
+    if (depth <= 0)
+    {
+        return Color(0.0, 0.0, 0.0);
+    }
+
     for (auto o: objects)
     {
         if (o->hit(ray, ray_interval, hit))
@@ -58,9 +63,9 @@ Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ra
         }
     }
 
-    if (depth > 0 && ray_interval.max < Infinity)
+    if (ray_interval.max < Infinity)
     {
-        return 0.5 * ray_color(objects, Ray{hit.p, random_on_hemisphere(hit.normal)}, depth - 1);
+        return 0.5 * ray_color(objects, Ray{hit.p, hit.normal + random_on_unit_sphere()}, depth - 1);
         // return 0.5 * Color(hit.normal[0] + 1, hit.normal[1] + 1, hit.normal[2] + 1);
     } else
     {
@@ -74,7 +79,7 @@ Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ra
 void render(AppState *app_state, const World *world, Camera *camera, uint32_t *buffer)
 {
     reinitialize_aa_if_needed(*app_state);
-    int max_depth = 20;
+    int max_depth = 50;
 
 
     auto pixel_delta_u = camera->viewport.u / app_state->image_width;

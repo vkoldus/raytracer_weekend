@@ -11,7 +11,7 @@ inline Vector3 random_in_unit_sphere()
 {
     while (true)
     {
-        auto v = (Vector3::Random() - Vector3(1, 1, 1)) / 2;
+        auto v = Vector3::Random();
         if (v.norm() < 1.0)
         {
             return v;
