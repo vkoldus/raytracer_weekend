@@ -15,6 +15,7 @@
 #include "camera.h"
 #include "objects.h"
 #include "random.h"
+#include "gamma.h"
 
 using namespace std::chrono_literals;
 using World = std::vector<std::shared_ptr<Hittable> >;
@@ -108,14 +109,16 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
                              0.0
                          }) - camera->center
                     };
-                    color += (ray_color(*world, ray, max_depth) * 255).cast<int>();
+                    color += (linear_to_gamma(ray_color(*world, ray, max_depth)) * 255).cast<int>();
                 }
                 color = (color / aa_sampling_offsets.size()).cast<int>();
             } else
             {
                 Ray ray{camera->center, pixel_center - camera->center};
-                color = (ray_color(*world, ray, max_depth) * 255).cast<int>();
+                color = (linear_to_gamma(ray_color(*world, ray, max_depth)) * 255).cast<int>();
             }
+
+            color = color;
 
             buffer[j * app_state->image_width + i] = 0xff << 24 | color(2) << 16 | color(1) << 8 | color(0);
 
