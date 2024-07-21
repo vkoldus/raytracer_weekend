@@ -23,6 +23,9 @@ add_executable(pathtracing src/main.cpp src/bindings/imgui_impl_glfw.cpp src/bin
         include/consts.h
         include/random.h
         include/gamma.h
+        include/path_tracer/materials/material.h
+        include/path_tracer/world.h
+        include/path_tracer/materials/lambertian.h
 )
 
 include_directories(include)

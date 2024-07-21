@@ -8,6 +8,8 @@
 #include "types.h"
 #include "ray.h"
 
+class Material;
+
 class Hittable {
 public:
     [[nodiscard]] virtual bool hit(const Ray &r, const Interval &interval, HitInfo &hit) const = 0;
@@ -19,8 +21,10 @@ class Sphere : public Hittable {
 public:
     Point3 center;
     fp_t radius;
+    std::shared_ptr<const Material> material;
 
-    Sphere(const Point3 &center, fp_t radius): center(center), radius(radius)
+    Sphere(const Point3 &center, fp_t radius, std::shared_ptr<const Material> mat): center(center), radius(radius),
+        material(mat)
     {
     }
 
@@ -57,6 +61,7 @@ public:
 
             hit.p = r.at(t);
             hit.t = t;
+            hit.material = material;
 
             // It's our responsibility to make sure the normal always points against the ray
             Vector3 outward_normal = (hit.p - center) / radius;

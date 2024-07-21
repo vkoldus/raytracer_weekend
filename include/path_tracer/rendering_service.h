@@ -10,6 +10,7 @@
 #include "state/app_state.h"
 #include "path_tracer/path_tracer.h"
 #include "path_tracer/camera.h"
+#include "path_tracer/world.h"
 
 struct RenderingService {
     ImageWithTexture image1;
@@ -23,14 +24,9 @@ struct RenderingService {
                                            image1(create_image_with_texture(
                                                app_state.image_width, app_state.image_height)),
                                            camera(1.0, Vector3(0, 0, 0), 2.0,
-                                                  (double(app_state.image_width) / app_state.image_height))
-
-
+                                                  (double(app_state.image_width) / app_state.image_height)),
+                                           world(make_world())
     {
-        world = {
-            std::make_shared<Sphere>(Point3(0, 0, -1), 0.5),
-            std::make_shared<Sphere>(Point3(0, -100.5, -1), 100),
-        };
     }
 
     void render_sync()

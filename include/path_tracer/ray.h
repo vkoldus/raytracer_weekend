@@ -7,6 +7,8 @@
 
 #include "types.h"
 
+class Material;
+
 struct Ray {
     Point3 origin;
     Vector3 direction;
@@ -29,6 +31,7 @@ public:
     Vector3 normal;
     fp_t t;
     bool front_face;
+    std::shared_ptr<const Material> material;
 };
 
 #endif //RAY_H

@@ -14,8 +14,8 @@
 #include "interpolation.h"
 #include "camera.h"
 #include "objects.h"
-#include "random.h"
 #include "gamma.h"
+#include "materials/material.h"
 
 using namespace std::chrono_literals;
 using World = std::vector<std::shared_ptr<Hittable> >;
@@ -66,7 +66,12 @@ Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ra
 
     if (ray_interval.max < Infinity)
     {
-        return 0.5 * ray_color(objects, Ray{hit.p, hit.normal + random_on_unit_sphere()}, depth - 1);
+        Ray scattered;
+        Color color_attenuation;
+        hit.material->scatter(ray, hit, color_attenuation, scattered);
+
+        return color_attenuation.cwiseProduct(ray_color(objects, scattered, depth - 1));
+
         // return 0.5 * Color(hit.normal[0] + 1, hit.normal[1] + 1, hit.normal[2] + 1);
     } else
     {
