@@ -71,6 +71,9 @@ Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ra
         if (hit.material->scatter(ray, hit, color_attenuation, scattered))
         {
             return color_attenuation.cwiseProduct(ray_color(objects, scattered, depth - 1));
+        } else
+        {
+            return {0, 0, 0};
         }
 
         // return 0.5 * ray_color(objects, Ray{hit.p, hit.normal + random_on_unit_sphere()}, depth - 1);

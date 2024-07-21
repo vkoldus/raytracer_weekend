@@ -16,10 +16,11 @@ Vector3 reflect(const Vector3 &v, const Vector3 &n)
 
 class Metal : public Material {
     Color albedo;
+    fp_t fuzz;
 
 public:
-    Metal(const Color &albedo)
-        : albedo(albedo)
+    Metal(const Color &albedo, fp_t fuzz = 0.0)
+        : albedo(albedo), fuzz(fuzz)
     {
     }
 
@@ -28,13 +29,17 @@ public:
     ) const override
     {
         scattered.origin = hit.p;
-        scattered.direction = reflect(ray_in.direction, hit.normal);
+        scattered.direction = reflect(ray_in.direction, hit.normal).normalized() + fuzz * random_on_unit_sphere();
 
         // TODO: Why / how does this work exactly?
 
         attenuation = albedo;
 
-        return true;
+        if (scattered.direction.dot(hit.normal) < 0)
+            // Reflected into the material, so we stop the scattering.
+            return false;
+        else
+            return true;
     }
 };
 
