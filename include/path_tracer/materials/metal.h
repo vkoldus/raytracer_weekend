@@ -2,20 +2,23 @@
 // Created by Vaclav Koldus on 21/07/2024.
 //
 
-#ifndef LAMBERTIAN_H
-#define LAMBERTIAN_H
-
-#include <random>
+#ifndef METAL_H
+#define METAL_H
 
 #include "random.h"
 #include "path_tracer/ray.h"
 #include "material.h"
 
-class Lambertian : public Material {
+Vector3 reflect(const Vector3 &v, const Vector3 &n)
+{
+    return v - 2 * v.dot(n) * n;
+}
+
+class Metal : public Material {
     Color albedo;
 
 public:
-    Lambertian(const Color &albedo)
+    Metal(const Color &albedo)
         : albedo(albedo)
     {
     }
@@ -25,11 +28,9 @@ public:
     ) const override
     {
         scattered.origin = hit.p;
+        scattered.direction = reflect(ray_in.direction, hit.normal);
 
         // TODO: Why / how does this work exactly?
-        scattered.direction = hit.normal + random_on_unit_sphere();
-        if (scattered.direction.cwiseAbs().minCoeff() < 1e-8)
-            scattered.direction = hit.normal;
 
         attenuation = albedo;
 
@@ -37,4 +38,4 @@ public:
     }
 };
 
-#endif //LAMBERTIAN_H
+#endif //METAL_H

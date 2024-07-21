@@ -68,17 +68,18 @@ Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ra
     {
         Ray scattered;
         Color color_attenuation;
-        hit.material->scatter(ray, hit, color_attenuation, scattered);
+        if (hit.material->scatter(ray, hit, color_attenuation, scattered))
+        {
+            return color_attenuation.cwiseProduct(ray_color(objects, scattered, depth - 1));
+        }
 
-        return color_attenuation.cwiseProduct(ray_color(objects, scattered, depth - 1));
-
+        // return 0.5 * ray_color(objects, Ray{hit.p, hit.normal + random_on_unit_sphere()}, depth - 1);
         // return 0.5 * Color(hit.normal[0] + 1, hit.normal[1] + 1, hit.normal[2] + 1);
-    } else
-    {
-        // Gradient for background
-        double a = 0.5 * (ray.direction.normalized()[1] + 1);
-        return lerp(a, Color(1.0, 1.0, 1.0), Color(.5, 0.7, 1.0));
     }
+
+    // Gradient for background
+    double a = 0.5 * (ray.direction.normalized()[1] + 1);
+    return lerp(a, Color(1.0, 1.0, 1.0), Color(.5, 0.7, 1.0));
 }
 
 

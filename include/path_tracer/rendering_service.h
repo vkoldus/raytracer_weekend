@@ -58,7 +58,7 @@ struct RenderingService {
             // Move one of the objects
             if (app_state.move_object)
             {
-                std::dynamic_pointer_cast<Sphere>(world[0])->center[0] = sinf((float) ImGui::GetTime());
+                std::dynamic_pointer_cast<Sphere>(world[1])->center[0] = sinf((float) ImGui::GetTime());
             }
 
             // Move the camera

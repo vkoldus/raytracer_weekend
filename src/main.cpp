@@ -54,7 +54,7 @@ int main()
     io.Fonts->AddFontDefault();
 
     RenderingService rendering_service(app_state);
-    rendering_service.render_sync();
+    rendering_service.render_async();
 
 
     while (!glfwWindowShouldClose(window))
