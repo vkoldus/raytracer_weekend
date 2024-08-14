@@ -27,7 +27,19 @@ public:
 
         fp_t ref_idx = hit.front_face ? (1.0 / refraction_index) : refraction_index;
 
-        scattered = Ray{hit.p, refract(ray_in.direction.normalized(), hit.normal, ref_idx)};
+        auto unit_direction = ray_in.direction.normalized();
+        double cos_theta = std::fmin((-unit_direction.dot(hit.normal)), 1.0);
+        double sin_theta = std::sqrt(1.0 - cos_theta * cos_theta);
+
+        bool cannot_refract = ref_idx * sin_theta > 1.0;
+
+        Vector3 direction;
+        if (cannot_refract)
+            direction = reflect(unit_direction, hit.normal);
+        else
+            direction = refract(unit_direction, hit.normal, ref_idx);
+
+        scattered = Ray{hit.p, direction};
 
         return true;
     }
