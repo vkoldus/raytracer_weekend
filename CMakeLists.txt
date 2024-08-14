@@ -27,6 +27,7 @@ add_executable(pathtracing src/main.cpp src/bindings/imgui_impl_glfw.cpp src/bin
         include/path_tracer/world.h
         include/path_tracer/materials/lambertian.h
         include/path_tracer/materials/metal.h
+        include/path_tracer/materials/dielectric.h
 )
 
 include_directories(include)

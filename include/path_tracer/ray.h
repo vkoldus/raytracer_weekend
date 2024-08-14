@@ -39,4 +39,12 @@ Vector3 reflect(const Vector3 &v, const Vector3 &n)
     return v - 2 * v.dot(n) * n;
 }
 
-#endif //RAY_H
+Vector3 refract(const Vector3 &unit_v, const Vector3 &normal, double etai_over_etat)
+{
+    auto cos_theta = fmin((-unit_v).dot(normal), 1.0);
+    Vector3 r_out_perp = etai_over_etat * (unit_v + cos_theta * normal);
+    Vector3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.squaredNorm())) * normal;
+    return r_out_perp + r_out_parallel;
+}
+
+#endif // RAY_H
