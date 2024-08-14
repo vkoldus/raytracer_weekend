@@ -6,9 +6,11 @@
 #define WORLD_H
 
 #include "types.h"
+#include "path_tracer/objects.h"
 #include "path_tracer/materials/lambertian.h"
 #include "path_tracer/materials/metal.h"
 
+using World = std::vector<std::shared_ptr<Object>>;
 
 World make_world()
 {
@@ -25,4 +27,4 @@ World make_world()
     };
 }
 
-#endif //WORLD_H
+#endif // WORLD_H

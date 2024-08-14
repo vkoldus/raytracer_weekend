@@ -19,6 +19,7 @@ struct RenderingService {
     World world;
     Camera camera;
 
+    bool prev_fuzz;
 
     RenderingService(AppState &app_state)
         : app_state(app_state),
@@ -26,6 +27,7 @@ struct RenderingService {
           image1(create_image_with_texture(app_state.image_width, app_state.image_height)),
           camera(1.0, Vector3(0, 0, 0), 2.0, (double(app_state.image_width) / app_state.image_height)),
           world(make_world()),
+          prev_fuzz(true)
     {
     }
 
@@ -65,6 +67,18 @@ struct RenderingService {
             if (app_state.move_camera)
             {
                 camera.center[1] = sinf((float) ImGui::GetTime() / 3) / 3;
+            }
+
+            // Modify materials based on config
+            if (prev_fuzz != app_state.metal_fuzz)
+            {
+                std::cout << "Changing fuzz to " << app_state.metal_fuzz << std::endl;
+                for (auto object: world)
+                {
+                    object->material().enable_fuzz(app_state.metal_fuzz);
+                }
+
+                prev_fuzz = app_state.metal_fuzz;
             }
         }
     }

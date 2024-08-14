@@ -20,6 +20,7 @@ struct AppState {
     bool move_camera = false;
     bool move_object = false;
     bool antialiasing = true;
+    bool metal_fuzz = true;
 
     // Rendering status
     float progress = 0.0;

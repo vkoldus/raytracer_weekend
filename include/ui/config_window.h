@@ -18,6 +18,7 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
     ImGui::Checkbox("Move camera", &app_state.move_camera);
     ImGui::Checkbox("Move object", &app_state.move_object);
     ImGui::Checkbox("Anti-aliasing", &app_state.antialiasing);
+    ImGui::Checkbox("Metal fuzz", &app_state.metal_fuzz);
     //     // ImGui::Checkbox("Another Window", &show_another_window);
     //
     //     ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f

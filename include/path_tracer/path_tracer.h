@@ -9,20 +9,20 @@
 #include <iostream>
 #include <memory>
 
-
-#include "types.h"
-#include "interpolation.h"
 #include "camera.h"
-#include "objects.h"
 #include "gamma.h"
+#include "interpolation.h"
 #include "materials/material.h"
+#include "objects.h"
+#include "state/app_state.h"
+#include "types.h"
+#include "world.h"
 
 using namespace std::chrono_literals;
-using World = std::vector<std::shared_ptr<Hittable> >;
 
 std::vector<Vector2> aa_sampling_offsets;
 
-auto hi_q_aa_samples = 100;
+auto const HI_Q_AA_SAMPLES = 100;
 
 void reinitialize_aa_if_needed(const AppState &app_state)
 {
@@ -35,17 +35,17 @@ void reinitialize_aa_if_needed(const AppState &app_state)
         }
     }
 
-    if (!app_state.live_render && aa_sampling_offsets.size() != hi_q_aa_samples)
+    if (!app_state.live_render && aa_sampling_offsets.size() != HI_Q_AA_SAMPLES)
     {
         aa_sampling_offsets.clear();
-        for (int i = 0; i < hi_q_aa_samples; i++)
+        for (int i = 0; i < HI_Q_AA_SAMPLES; i++)
         {
             aa_sampling_offsets.push_back(Vector2::Random() / 2);
         }
     }
 }
 
-Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ray &ray, int depth)
+Color ray_color(const World &objects, const Ray &ray, int depth)
 {
     HitInfo hit;
     Interval ray_interval = {0.001, +Infinity};

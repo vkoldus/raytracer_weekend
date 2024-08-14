@@ -18,7 +18,10 @@ public:
     {
         return false;
     }
-};
 
+    virtual void enable_fuzz(bool enable)
+    {
+    }
+};
 
 #endif // MATERIAL_H

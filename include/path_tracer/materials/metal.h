@@ -5,26 +5,31 @@
 #ifndef METAL_H
 #define METAL_H
 
-#include "random.h"
-#include "path_tracer/ray.h"
 #include "material.h"
+#include "path_tracer/ray.h"
+#include "random.h"
 
 class Metal : public Material {
-    Color albedo;
-    fp_t fuzz;
+    bool _fuzz_enabled = true;
 
 public:
     Metal(const Color &albedo, fp_t fuzz = 0.0)
-        : albedo(albedo), fuzz(fuzz)
+        : albedo(albedo),
+          fuzz(fuzz)
     {
     }
 
-    bool scatter(
-        const Ray &ray_in, const HitInfo &hit, Color &attenuation, Ray &scattered
-    ) const override
+    bool scatter(const Ray &ray_in, const HitInfo &hit, Color &attenuation, Ray &scattered) const override
     {
+        Vector3 fuzz_coeff = Vector3::Zero();
+
+        if (_fuzz_enabled)
+        {
+            fuzz_coeff = fuzz * random_on_unit_sphere();
+        }
+
         scattered.origin = hit.p;
-        scattered.direction = reflect(ray_in.direction, hit.normal).normalized() + fuzz * random_on_unit_sphere();
+        scattered.direction = reflect(ray_in.direction, hit.normal).normalized() + fuzz_coeff;
 
         // TODO: Why / how does this work exactly?
 
@@ -36,6 +41,14 @@ public:
         else
             return true;
     }
+
+    virtual void enable_fuzz(bool enable) override
+    {
+        _fuzz_enabled = enable;
+    }
+
+    Color albedo;
+    fp_t fuzz;
 };
 
 #endif // METAL_H

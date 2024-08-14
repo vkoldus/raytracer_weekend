@@ -17,14 +17,22 @@ public:
     virtual ~Hittable() = default;
 };
 
-class Sphere : public Hittable {
+class Object : public Hittable {
+public:
+    virtual Material &material() = 0;
+};
+
+class Sphere : public Object {
+    std::shared_ptr<Material> _material;
+
 public:
     Point3 center;
     fp_t radius;
-    std::shared_ptr<const Material> material;
 
-    Sphere(const Point3 &center, fp_t radius, std::shared_ptr<const Material> mat): center(center), radius(radius),
-        material(mat)
+    Sphere(const Point3 &center, fp_t radius, std::shared_ptr<Material> mat)
+        : center(center),
+          radius(radius),
+          _material(mat)
     {
     }
 
@@ -61,7 +69,7 @@ public:
 
             hit.p = r.at(t);
             hit.t = t;
-            hit.material = material;
+            hit.material = _material;
 
             // It's our responsibility to make sure the normal always points against the ray
             Vector3 outward_normal = (hit.p - center) / radius;
@@ -80,6 +88,11 @@ public:
         {
             return false;
         }
+    }
+
+    virtual Material &material() override
+    {
+        return *_material;
     }
 };
 
