@@ -45,7 +45,6 @@ void reinitialize_aa_if_needed(const AppState &app_state)
     }
 }
 
-
 Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ray &ray, int depth)
 {
     HitInfo hit;
@@ -85,12 +84,10 @@ Color ray_color(const std::vector<std::shared_ptr<Hittable> > &objects, const Ra
     return lerp(a, Color(1.0, 1.0, 1.0), Color(.5, 0.7, 1.0));
 }
 
-
 void render(AppState *app_state, const World *world, Camera *camera, uint32_t *buffer)
 {
     reinitialize_aa_if_needed(*app_state);
     int max_depth = 50;
-
 
     auto pixel_delta_u = camera->viewport.u / app_state->image_width;
     auto pixel_delta_v = camera->viewport.v / app_state->image_height;
@@ -111,13 +108,10 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
 
                 for (int i = 0; i < aa_sampling_offsets.size(); i++)
                 {
-                    Ray ray{
-                        camera->center,
-                        (pixel_center + Vector3d{
-                             pixel_delta_u[0] * aa_sampling_offsets[i][0], pixel_delta_v[1] * aa_sampling_offsets[i][1],
-                             0.0
-                         }) - camera->center
-                    };
+                    Ray ray{camera->center,
+                            (pixel_center + Vector3d{pixel_delta_u[0] * aa_sampling_offsets[i][0],
+                                                     pixel_delta_v[1] * aa_sampling_offsets[i][1], 0.0}) -
+                                    camera->center};
                     color += (linear_to_gamma(ray_color(*world, ray, max_depth)) * 255).cast<int>();
                 }
                 color = (color / aa_sampling_offsets.size()).cast<int>();
@@ -146,5 +140,4 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
     app_state->rendering_finished = true;
 }
 
-
-#endif //PATH_TRACER_MAIN_H
+#endif // PATH_TRACER_MAIN_H

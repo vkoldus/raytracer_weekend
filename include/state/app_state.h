@@ -27,4 +27,4 @@ struct AppState {
     bool rendering_finished = false;
 };
 
-#endif //APP_STATE_H
+#endif // APP_STATE_H

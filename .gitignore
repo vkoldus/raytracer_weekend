@@ -35,3 +35,6 @@
 cmake-build-debug
 cmake-build-release
 src/bindings/*
+
+.build
+.vscode

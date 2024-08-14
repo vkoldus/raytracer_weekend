@@ -1,16 +1,16 @@
+#include <GLFW/glfw3.h>
 #include <cmath>
 #include <iostream>
 #include <thread>
-#include <GLFW/glfw3.h>
 
-#include "imgui.h"
 #include "bindings/imgui_impl_glfw.h"
 #include "bindings/imgui_impl_opengl2.h"
+#include "imgui.h"
 
-#include "state/app_state.h"
-#include "ui/rendering_window.h"
-#include "ui/config_window.h"
 #include "path_tracer/rendering_service.h"
+#include "state/app_state.h"
+#include "ui/config_window.h"
+#include "ui/rendering_window.h"
 
 static void glfw_error_callback(int error, const char *description)
 {
@@ -26,8 +26,10 @@ int main()
     AppState app_state;
 
     // Create window with graphics context
-    GLFWwindow *window = glfwCreateWindow(app_state.window_size[0], app_state.window_size[1],
-                                          "Path tracing in one weekend", nullptr,
+    GLFWwindow *window = glfwCreateWindow(app_state.window_size[0],
+                                          app_state.window_size[1],
+                                          "Path tracing in one weekend",
+                                          nullptr,
                                           nullptr);
     if (window == nullptr)
         return 1;
@@ -55,7 +57,6 @@ int main()
 
     RenderingService rendering_service(app_state);
     rendering_service.render_async();
-
 
     while (!glfwWindowShouldClose(window))
     {

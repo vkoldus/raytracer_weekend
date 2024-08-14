@@ -5,8 +5,8 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
-#include "types.h"
 #include "ray.h"
+#include "types.h"
 
 class Material;
 
@@ -83,4 +83,4 @@ public:
     }
 };
 
-#endif //OBJECTS_H
+#endif // OBJECTS_H

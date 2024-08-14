@@ -7,10 +7,10 @@
 
 #include <png.h>
 #include "images.h"
-#include "state/app_state.h"
-#include "path_tracer/path_tracer.h"
 #include "path_tracer/camera.h"
+#include "path_tracer/path_tracer.h"
 #include "path_tracer/world.h"
+#include "state/app_state.h"
 
 struct RenderingService {
     ImageWithTexture image1;
@@ -19,13 +19,13 @@ struct RenderingService {
     World world;
     Camera camera;
 
-    RenderingService(AppState &app_state): app_state(app_state),
-                                           rendering_thread(),
-                                           image1(create_image_with_texture(
-                                               app_state.image_width, app_state.image_height)),
-                                           camera(1.0, Vector3(0, 0, 0), 2.0,
-                                                  (double(app_state.image_width) / app_state.image_height)),
-                                           world(make_world())
+
+    RenderingService(AppState &app_state)
+        : app_state(app_state),
+          rendering_thread(),
+          image1(create_image_with_texture(app_state.image_width, app_state.image_height)),
+          camera(1.0, Vector3(0, 0, 0), 2.0, (double(app_state.image_width) / app_state.image_height)),
+          world(make_world()),
     {
     }
 
@@ -116,5 +116,4 @@ struct RenderingService {
     }
 };
 
-
-#endif //RENDERING_SERVICE_H
+#endif // RENDERING_SERVICE_H

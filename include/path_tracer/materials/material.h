@@ -14,13 +14,11 @@ class Material {
 public:
     virtual ~Material() = default;
 
-    virtual bool scatter(
-        const Ray &r_in, const HitInfo &rec, Color &attenuation, Ray &scattered
-    ) const
+    virtual bool scatter(const Ray &r_in, const HitInfo &rec, Color &attenuation, Ray &scattered) const
     {
         return false;
     }
 };
 
 
-#endif //MATERIAL_H
+#endif // MATERIAL_H

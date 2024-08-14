@@ -27,7 +27,8 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
     if (app_state.live_render)
     {
         rendering_service.render_sync();
-    } else
+    }
+    else
     {
         if (ImGui::Button("Render"))
         {
@@ -42,4 +43,4 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
     ImGui::Text("%.3f ms/f (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
     ImGui::End();
 }
-#endif //CONFIG_WINDOW_H
+#endif // CONFIG_WINDOW_H

@@ -11,4 +11,4 @@ T lerp(double a, T start, T end)
     return (1 - a) * start + a * end;
 }
 
-#endif //INTERPOLATION_H
+#endif // INTERPOLATION_H

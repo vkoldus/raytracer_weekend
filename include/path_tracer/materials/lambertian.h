@@ -7,9 +7,9 @@
 
 #include <random>
 
-#include "random.h"
-#include "path_tracer/ray.h"
 #include "material.h"
+#include "path_tracer/ray.h"
+#include "random.h"
 
 class Lambertian : public Material {
     Color albedo;
@@ -20,9 +20,7 @@ public:
     {
     }
 
-    bool scatter(
-        const Ray &ray_in, const HitInfo &hit, Color &attenuation, Ray &scattered
-    ) const override
+    bool scatter(const Ray &ray_in, const HitInfo &hit, Color &attenuation, Ray &scattered) const override
     {
         scattered.origin = hit.p;
 
@@ -37,4 +35,4 @@ public:
     }
 };
 
-#endif //LAMBERTIAN_H
+#endif // LAMBERTIAN_H
