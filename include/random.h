@@ -5,6 +5,7 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
+#include <random>
 #include "types.h"
 
 inline Vector3 random_in_unit_sphere()
@@ -36,4 +37,9 @@ inline Vector3 random_on_hemisphere(const Vector3 &normal)
     }
 }
 
-#endif //RANDOM_H
+fp_t random_number()
+{
+    return std::rand() / (RAND_MAX + 1.0);
+}
+
+#endif // RANDOM_H

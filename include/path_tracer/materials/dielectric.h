@@ -7,6 +7,7 @@
 
 #include "path_tracer/materials/material.h"
 #include "path_tracer/ray.h"
+#include "random.h"
 #include "types.h"
 
 
@@ -34,14 +35,28 @@ public:
         bool cannot_refract = ref_idx * sin_theta > 1.0;
 
         Vector3 direction;
-        if (cannot_refract)
+        ;
+        if (cannot_refract || reflectance(cos_theta, ref_idx) > random_number())
+        {
             direction = reflect(unit_direction, hit.normal);
-        else
+
+        } else
+        {
             direction = refract(unit_direction, hit.normal, ref_idx);
+        }
 
         scattered = Ray{hit.p, direction};
 
         return true;
+    }
+
+    static double reflectance(double cosine, double refraction_index)
+    {
+        // Use Schlick's approximation for reflectance.
+        auto r0 = (1 - refraction_index) / (1 + refraction_index);
+        r0 = r0 * r0;
+
+        return r0 + (1 - r0) * std::pow((1 - cosine), 5);
     }
 };
 
