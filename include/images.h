@@ -20,10 +20,9 @@ auto create_image_with_texture(int image_width, int image_height) -> ImageWithTe
     ImageWithTexture out;
     out.width = image_width;
     out.height = image_height;
-    out.buffer = (uint32_t *) malloc(image_width * image_height * 4);
+    out.buffer = (uint32_t *) malloc((size_t) (image_width * image_height * 4));
 
     // Create a OpenGL texture identifier
-    GLuint image_texture;
     glGenTextures(1, &out.gl_texture);
     glBindTexture(GL_TEXTURE_2D, out.gl_texture);
 
@@ -50,4 +49,4 @@ void delete_image_with_texture(const ImageWithTexture &image)
     glDeleteTextures(1, &image.gl_texture);
 }
 
-#endif //IMAGES_H
+#endif // IMAGES_H

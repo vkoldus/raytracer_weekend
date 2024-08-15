@@ -7,19 +7,19 @@
 
 #include "types.h"
 
-class Ray;
+struct Ray;
 class HitInfo;
 
 class Material {
 public:
     virtual ~Material() = default;
 
-    virtual bool scatter(const Ray &r_in, const HitInfo &rec, Color &attenuation, Ray &scattered) const
+    virtual bool scatter(const Ray &, const HitInfo &, Color &, Ray &) const
     {
         return false;
     }
 
-    virtual void enable_fuzz(bool enable)
+    virtual void enable_fuzz(bool)
     {
     }
 };

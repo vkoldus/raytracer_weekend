@@ -6,8 +6,8 @@
 #define RENDERING_WINDOW_H
 
 #include <imgui.h>
-#include "state/app_state.h"
 #include "path_tracer/rendering_service.h"
+#include "state/app_state.h"
 
 void rendering_window(AppState &app_state, const RenderingService &rendering_service)
 {
@@ -18,7 +18,7 @@ void rendering_window(AppState &app_state, const RenderingService &rendering_ser
     ImGui::Begin("Path tracer output");
 
     ImVec2 availableSize = ImGui::GetContentRegionAvail();
-    availableSize.y = availableSize.x / app_state.aspect_ratio;
+    availableSize.y = (float) (availableSize.x / app_state.aspect_ratio);
 
     ImGui::Image((void *) (intptr_t) rendering_service.gl_texture(), availableSize);
     ImGui::ProgressBar(app_state.progress, ImVec2(ImGui::GetFontSize() * 25, 0.0f));
@@ -29,4 +29,4 @@ void rendering_window(AppState &app_state, const RenderingService &rendering_ser
     ImGui::PopStyleVar();
 }
 
-#endif //RENDERING_WINDOW_H
+#endif // RENDERING_WINDOW_H

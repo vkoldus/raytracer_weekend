@@ -19,10 +19,10 @@ struct Ray {
     }
 };
 
-static Ray operator+(const Ray &l, const Vector3 &r)
-{
-    return {l.origin, l.direction + r};
-}
+// static Ray operator+(const Ray &l, const Vector3 &r)
+// {
+//     return {l.origin, l.direction + r};
+// }
 
 
 class HitInfo {

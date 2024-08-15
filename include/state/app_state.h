@@ -15,7 +15,7 @@ struct AppState {
     // Rendering config
     double aspect_ratio = 16.0 / 9.0;
     int image_width = 400;
-    int image_height = fmax(1, image_width / aspect_ratio);
+    int image_height = std::max(1, int(image_width / aspect_ratio));
     bool live_render = false;
     bool move_camera = false;
     bool move_object = false;

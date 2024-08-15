@@ -30,9 +30,9 @@ public:
     fp_t radius;
 
     Sphere(const Point3 &center, fp_t radius, std::shared_ptr<Material> mat)
-        : center(center),
-          radius(radius),
-          _material(mat)
+        : _material(mat),
+          center(center),
+          radius(radius)
     {
     }
 

@@ -8,6 +8,9 @@ find_package(imgui)
 find_package(Eigen3)
 find_package(PNG)
 
+add_compile_options(-Wall -Wextra -Wshadow -Wconversion -Wpedantic -Werror)
+set_source_files_properties(src/bindings/imgui_impl_opengl2.cpp PROPERTIES COMPILE_FLAGS "-Wno-macro-redefined -Wno-sign-conversion")
+
 add_executable(pathtracing src/main.cpp src/bindings/imgui_impl_glfw.cpp src/bindings/imgui_impl_opengl2.cpp
         include/images.h
         include/path_tracer/path_tracer.h
@@ -36,4 +39,3 @@ target_link_libraries(pathtracing glfw)
 target_link_libraries(pathtracing imgui::imgui)
 target_link_libraries(pathtracing Eigen3::Eigen)
 target_link_libraries(pathtracing PNG::PNG)
-

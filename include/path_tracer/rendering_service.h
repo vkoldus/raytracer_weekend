@@ -13,12 +13,11 @@
 #include "state/app_state.h"
 
 struct RenderingService {
-    ImageWithTexture image1;
-    std::thread rendering_thread;
     AppState &app_state;
-    World world;
+    std::thread rendering_thread;
+    ImageWithTexture image1;
     Camera camera;
-
+    World world;
     bool prev_fuzz;
 
     RenderingService(AppState &app_state)
@@ -97,18 +96,18 @@ struct RenderingService {
 
         png_set_IHDR(png_ptr,
                      info_ptr,
-                     image1.width,
-                     image1.height,
+                     (png_uint_32) image1.width,
+                     (png_uint_32) image1.height,
                      8,
                      PNG_COLOR_TYPE_RGB,
                      PNG_INTERLACE_NONE,
                      PNG_COMPRESSION_TYPE_DEFAULT,
                      PNG_FILTER_TYPE_DEFAULT);
 
-        png_byte **row_pointers = (png_byte **) png_malloc(png_ptr, image1.height * sizeof(png_byte *));
+        png_byte **row_pointers = (png_byte **) png_malloc(png_ptr, (size_t) image1.height * sizeof(png_byte *));
         for (int y = 0; y < image1.height; y++)
         {
-            png_byte *row = (png_byte *) png_malloc(png_ptr, sizeof(uint8_t) * image1.width * 24);
+            png_byte *row = (png_byte *) png_malloc(png_ptr, sizeof(uint8_t) * size_t(image1.width) * 24);
             row_pointers[y] = row;
             for (int x = 0; x < image1.width; x++)
             {

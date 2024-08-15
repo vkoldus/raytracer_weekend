@@ -84,7 +84,8 @@ Color ray_color(const World &objects, const Ray &ray, int depth)
     return lerp(a, Color(1.0, 1.0, 1.0), Color(.5, 0.7, 1.0));
 }
 
-void render(AppState *app_state, const World *world, Camera *camera, uint32_t *buffer)
+void render(AppState *app_state, const World *world, Camera *camera, uint32_t *buffer, size_t line_start,
+            size_t line_end)
 {
     reinitialize_aa_if_needed(*app_state);
     int max_depth = 50;
@@ -96,9 +97,9 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
     auto top_left_pixel = camera->viewport_top_left + (pixel_delta_u + pixel_delta_v) / 2;
 
     Vector3i color;
-    for (int j = 0; j < app_state->image_height; j++)
+    for (size_t j = line_start; j < line_end; j++)
     {
-        for (int i = 0; i < app_state->image_width; i++)
+        for (size_t i = 0; i < size_t(app_state->image_width); i++)
         {
             auto pixel_center = top_left_pixel + i * pixel_delta_u + j * pixel_delta_v;
 
@@ -106,11 +107,12 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
             {
                 color = {0, 0, 0};
 
-                for (int i = 0; i < aa_sampling_offsets.size(); i++)
+                for (size_t k = 0; k < aa_sampling_offsets.size(); k++)
                 {
                     Ray ray{camera->center,
-                            (pixel_center + Vector3d{pixel_delta_u[0] * aa_sampling_offsets[i][0],
-                                                     pixel_delta_v[1] * aa_sampling_offsets[i][1], 0.0}) -
+                            (pixel_center + Vector3d{pixel_delta_u[0] * aa_sampling_offsets[k][0],
+                                                     pixel_delta_v[1] * aa_sampling_offsets[k][1],
+                                                     0.0}) -
                                     camera->center};
                     color += (linear_to_gamma(ray_color(*world, ray, max_depth)) * 255).cast<int>();
                 }
@@ -121,9 +123,9 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
                 color = (linear_to_gamma(ray_color(*world, ray, max_depth)) * 255).cast<int>();
             }
 
-            color = color;
-
-            buffer[j * app_state->image_width + i] = 0xff << 24 | color(2) << 16 | color(1) << 8 | color(0);
+            buffer[j * (size_t) app_state->image_width + i] =
+                    (uint32_t) ((uint8_t) 0xff << 24 | (uint8_t) color(2) << 16 | (uint8_t) color(1) << 8 |
+                                (uint8_t) color(0));
 
             if (app_state->cancel_rendering)
             {
@@ -132,7 +134,7 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
             }
         }
 
-        app_state->progress = j / (app_state->image_height - 1.0);
+        app_state->progress = float(j / (app_state->image_height - 1.0));
         // std::this_thread::sleep_for(10ms);
         // std::this_thread::yield();
     }

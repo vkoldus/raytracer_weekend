@@ -20,7 +20,7 @@ public:
     {
     }
 
-    bool scatter(const Ray &ray_in, const HitInfo &hit, Color &attenuation, Ray &scattered) const override
+    bool scatter(const Ray &, const HitInfo &hit, Color &attenuation, Ray &scattered) const override
     {
         scattered.origin = hit.p;
 
