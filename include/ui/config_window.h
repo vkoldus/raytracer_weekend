@@ -6,8 +6,8 @@
 #define CONFIG_WINDOW_H
 
 #include <imgui.h>
-#include "state/app_state.h"
 #include "path_tracer/rendering_service.h"
+#include "state/app_state.h"
 
 void config_window(AppState &app_state, RenderingService &rendering_service, const ImGuiIO &io)
 {
@@ -19,6 +19,8 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
     ImGui::Checkbox("Move object", &app_state.move_object);
     ImGui::Checkbox("Anti-aliasing", &app_state.antialiasing);
     ImGui::Checkbox("Metal fuzz", &app_state.metal_fuzz);
+
+    ImGui::SliderAngle("Vertical FoV", &app_state.vfov_rad, 30, 120);
     //     // ImGui::Checkbox("Another Window", &show_another_window);
     //
     //     ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
@@ -28,8 +30,7 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
     if (app_state.live_render)
     {
         rendering_service.render_sync();
-    }
-    else
+    } else
     {
         if (ImGui::Button("Render"))
         {

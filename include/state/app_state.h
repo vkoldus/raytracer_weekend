@@ -6,6 +6,7 @@
 #define APP_STATE_H
 
 #include <Eigen/Dense>
+#include "consts.h"
 
 struct AppState {
     // Window
@@ -21,6 +22,7 @@ struct AppState {
     bool move_object = false;
     bool antialiasing = true;
     bool metal_fuzz = true;
+    float vfov_rad = float(Pi / 2);
 
     // Rendering status
     float progress = 0.0;

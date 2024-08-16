@@ -24,10 +24,18 @@ struct RenderingService {
         : app_state(app_state),
           rendering_thread(),
           image1(create_image_with_texture(app_state.image_width, app_state.image_height)),
-          camera(1.0, Vector3(0, 0, 0), 2.0, (double(app_state.image_width) / app_state.image_height)),
+          camera(make_camera(app_state)),
           world(make_world()),
           prev_fuzz(true)
     {
+    }
+
+    static Camera make_camera(AppState &app_state)
+    {
+        return Camera(1.0,
+                      Vector3(0, 0, 0),
+                      app_state.vfov_rad,
+                      (double(app_state.image_width) / app_state.image_height));
     }
 
     void render_sync()
@@ -60,6 +68,12 @@ struct RenderingService {
             if (app_state.move_object)
             {
                 std::dynamic_pointer_cast<Sphere>(world[1])->center[0] = sinf((float) ImGui::GetTime());
+            }
+
+            // Change the camera parameters
+            if (app_state.vfov_rad != camera.vfov_rad)
+            {
+                camera = make_camera(app_state);
             }
 
             // Move the camera
