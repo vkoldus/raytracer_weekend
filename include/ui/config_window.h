@@ -12,20 +12,14 @@
 void config_window(AppState &app_state, RenderingService &rendering_service, const ImGuiIO &io)
 {
     ImGui::Begin("Config");
-    //
-    //     ImGui::Text("This is some useful text."); // Display some text (you can use a format strings too)
+
     ImGui::Checkbox("Live render", &app_state.live_render);
     ImGui::Checkbox("Move camera", &app_state.move_camera);
     ImGui::Checkbox("Move object", &app_state.move_object);
     ImGui::Checkbox("Anti-aliasing", &app_state.antialiasing);
     ImGui::Checkbox("Metal fuzz", &app_state.metal_fuzz);
 
-    ImGui::SliderAngle("Vertical FoV", &app_state.vfov_rad, 30, 120);
-    //     // ImGui::Checkbox("Another Window", &show_another_window);
-    //
-    //     ImGui::SliderFloat("float", &f, 0.0f, 1.0f); // Edit 1 float using a slider from 0.0f to 1.0f
-    //     ImGui::ColorEdit3("clear color", (float *) &clear_color); // Edit 3 floats representing a color
-    //
+    ImGui::SliderAngle("VFoV", &app_state.vfov_rad, 30, 120);
 
     if (app_state.live_render)
     {
@@ -40,7 +34,7 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
 
     if (ImGui::Button("Save image"))
     {
-        rendering_service.save_next_image_to("/Users/vaclav/Desktop/ray_tracer.png");
+        rendering_service.save_next_image_to("ray_tracer.png");
     }
     ImGui::Text("%.3f ms/f (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
     ImGui::End();
