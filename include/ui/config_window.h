@@ -19,7 +19,7 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
     ImGui::Checkbox("Anti-aliasing", &app_state.antialiasing);
     ImGui::Checkbox("Metal fuzz", &app_state.metal_fuzz);
 
-    ImGui::SliderAngle("VFoV", &app_state.vfov_rad, 30, 120);
+    ImGui::SliderAngle("VFoV", &app_state.vfov_rad, 20, 120);
 
     if (app_state.live_render)
     {
