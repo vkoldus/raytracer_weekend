@@ -32,8 +32,15 @@ struct RenderingService {
 
     static Camera make_camera(AppState &app_state)
     {
-        return Camera(1.0,
-                      Vector3(0, 0, 0),
+        // return Camera(Vector3(0, 0, 0),
+        //               Vector3(0, 0, -1),
+        //               Vector3(0, 1, 0),
+        //               app_state.vfov_rad,
+        //               (double(app_state.image_width) / app_state.image_height));
+
+        return Camera(Vector3(-2, 2, 1),
+                      Vector3(0, 0, -1),
+                      Vector3(0, 1, 0),
                       app_state.vfov_rad,
                       (double(app_state.image_width) / app_state.image_height));
     }
@@ -79,7 +86,7 @@ struct RenderingService {
             // Move the camera
             if (app_state.move_camera)
             {
-                camera.center[1] = sinf((float) ImGui::GetTime() / 3) / 3;
+                camera.look_from[1] = sinf((float) ImGui::GetTime() / 3) / 3;
             }
 
             // Modify materials based on config

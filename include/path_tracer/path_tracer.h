@@ -90,8 +90,8 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
     reinitialize_aa_if_needed(*app_state);
     int max_depth = 50;
 
-    auto pixel_delta_u = camera->viewport.u / app_state->image_width;
-    auto pixel_delta_v = camera->viewport.v / app_state->image_height;
+    auto pixel_delta_u = camera->viewport_u / app_state->image_width;
+    auto pixel_delta_v = camera->viewport_v / app_state->image_height;
 
     // Pixel coordinates are defined in their centers
     auto top_left_pixel = camera->viewport_top_left + (pixel_delta_u + pixel_delta_v) / 2;
@@ -109,17 +109,17 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
 
                 for (size_t k = 0; k < aa_sampling_offsets.size(); k++)
                 {
-                    Ray ray{camera->center,
+                    Ray ray{camera->center(),
                             (pixel_center + Vector3d{pixel_delta_u[0] * aa_sampling_offsets[k][0],
                                                      pixel_delta_v[1] * aa_sampling_offsets[k][1],
                                                      0.0}) -
-                                    camera->center};
+                                    camera->center()};
                     color += (linear_to_gamma(ray_color(*world, ray, max_depth)) * 255).cast<int>();
                 }
                 color = (color / aa_sampling_offsets.size()).cast<int>();
             } else
             {
-                Ray ray{camera->center, pixel_center - camera->center};
+                Ray ray{camera->center(), pixel_center - camera->center()};
                 color = (linear_to_gamma(ray_color(*world, ray, max_depth)) * 255).cast<int>();
             }
 
