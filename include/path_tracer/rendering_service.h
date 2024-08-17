@@ -47,13 +47,14 @@ struct RenderingService {
 
     void render_sync()
     {
-        render(&app_state, &world, &camera, image1.buffer);
+        render(&app_state, &world, &camera, image1.buffer, 0, (size_t) app_state.image_height);
     }
 
     void render_async()
     {
         cancel_render();
-        rendering_thread = std::thread(render, &app_state, &world, &camera, image1.buffer);
+
+        rendering_thread = std::thread(render, &app_state, &world, &camera, image1.buffer, 0, app_state.image_height);
     }
 
     void cancel_render()
