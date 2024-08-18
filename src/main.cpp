@@ -42,7 +42,7 @@ int main()
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
     (void) io;
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
     // io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad; // Enable Gamepad Controls
 
     // Setup Dear ImGui style
@@ -66,7 +66,16 @@ int main()
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        rendering_service.loop_hook();
+        rendering_service.loop_hook(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_W)),
+                                    ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)),
+                                    ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_A)),
+                                    ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_D)),
+                                    ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Q)),
+                                    ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_E)),
+                                    ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_R)),
+                                    ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F)),
+                                    ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_T)),
+                                    ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_G)));
 
         rendering_window(app_state, rendering_service);
         config_window(app_state, rendering_service, io);

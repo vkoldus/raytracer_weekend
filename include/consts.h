@@ -7,7 +7,7 @@
 
 #include <limits>
 
-const double Infinity = std::numeric_limits<double>::infinity();
-const double Pi = 3.1415926535897932385;
+constexpr double Infinity = std::numeric_limits<double>::infinity();
+constexpr double Pi = 3.1415926535897932385;
 
-#endif //CONSTS_H
+#endif // CONSTS_H

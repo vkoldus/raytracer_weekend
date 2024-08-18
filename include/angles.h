@@ -7,7 +7,7 @@
 
 #include "consts.h"
 
-inline double degrees_to_radians(double degrees)
+constexpr inline double degrees_to_radians(double degrees)
 {
     return degrees * Pi / 180.0;
 }

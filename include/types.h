@@ -8,15 +8,17 @@
 #include <Eigen/Dense>
 #include "consts.h"
 
+using Eigen::Matrix3d;
+using Eigen::Vector2d;
 using Eigen::Vector3d;
 using Eigen::Vector3f;
 using Eigen::Vector3i;
-using Eigen::Vector2d;
 
 using Point3 = Vector3d;
 using Vector3 = Vector3d;
 using Vector2 = Vector2d;
 using Color = Vector3d;
+using Matrix3 = Matrix3d;
 
 using fp_t = double;
 
@@ -45,4 +47,4 @@ struct Interval {
 const Interval Interval::empty = {+Infinity, -Infinity};
 const Interval Interval::universe = {-Infinity, +Infinity};
 
-#endif //TYPES_H
+#endif // TYPES_H

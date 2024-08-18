@@ -30,7 +30,7 @@ World make_world()
     // auto R = std::cos(Pi / 4);
     return {
             std::make_shared<Sphere>(Point3(0, -100.5, -1.0), 100, material_ground),
-            std::make_shared<Sphere>(Point3(0, 0, -1.2), 0.5, material_center),
+            std::make_shared<Sphere>(Point3(0, 0, -1.0), 0.5, material_center),
             std::make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), 0.5, material_left),
             std::make_shared<Sphere>(Point3(-1.0, 0.0, -1.0), 0.4, material_bubble),
             std::make_shared<Sphere>(Point3(1.0, 0.0, -1.0), 0.5, material_right),

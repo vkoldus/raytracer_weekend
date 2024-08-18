@@ -37,6 +37,12 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
         rendering_service.save_next_image_to("ray_tracer.png");
     }
     ImGui::Text("%.3f ms/f (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+    ImGui::Text("");
+    ImGui::Text("Camera controls in live render mode");
+    ImGui::Text("-----------------------------------");
+    ImGui::Text("WSAD - move camera");
+    ImGui::Text("QE - strafe");
+    ImGui::Text("RFTG - Fly, pitch");
     ImGui::End();
 }
 #endif // CONFIG_WINDOW_H

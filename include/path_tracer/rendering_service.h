@@ -32,12 +32,6 @@ struct RenderingService {
 
     static Camera make_camera(AppState &app_state)
     {
-        // return Camera(Vector3(0, 0, 0),
-        //               Vector3(0, 0, -1),
-        //               Vector3(0, 1, 0),
-        //               app_state.vfov_rad,
-        //               (double(app_state.image_width) / app_state.image_height));
-
         return Camera(Vector3(-2, 2, 1),
                       Vector3(0, 0, -1),
                       Vector3(0, 1, 0),
@@ -67,7 +61,8 @@ struct RenderingService {
         app_state.cancel_rendering = false;
     }
 
-    void loop_hook()
+    void loop_hook(bool is_w_down, bool is_s_down, bool is_a_down, bool is_d_down, bool is_q_down, bool is_e_down,
+                   bool is_r_down, bool is_f_down, bool is_t_down, bool is_g_down)
     {
         if (app_state.rendering_finished)
         {
@@ -81,13 +76,61 @@ struct RenderingService {
             // Change the camera parameters
             if (app_state.vfov_rad != camera.vfov_rad)
             {
-                camera = make_camera(app_state);
+                camera =
+                        Camera(camera.look_from, camera.look_at, camera.up, app_state.vfov_rad, app_state.aspect_ratio);
             }
 
             // Move the camera
             if (app_state.move_camera)
             {
                 camera.look_from[1] = sinf((float) ImGui::GetTime() / 3) / 3;
+            } else
+            {
+                const fp_t speed = 0.1;
+                const fp_t turn_speed_deg = 5;
+
+                if (is_w_down)
+                {
+                    camera.forward(speed);
+                }
+
+                if (is_s_down)
+                {
+                    camera.forward(-speed);
+                }
+
+                if (is_a_down)
+                {
+                    camera.turn(turn_speed_deg);
+                }
+                if (is_d_down)
+                {
+                    camera.turn(-turn_speed_deg);
+                }
+                if (is_q_down)
+                {
+                    camera.strafe(-speed);
+                }
+                if (is_e_down)
+                {
+                    camera.strafe(speed);
+                }
+                if (is_r_down)
+                {
+                    camera.fly_vertical(speed);
+                }
+                if (is_f_down)
+                {
+                    camera.fly_vertical(-speed);
+                }
+                if (is_t_down)
+                {
+                    camera.look_vertical(turn_speed_deg);
+                }
+                if (is_g_down)
+                {
+                    camera.look_vertical(-turn_speed_deg);
+                }
             }
 
             // Modify materials based on config
