@@ -10,6 +10,7 @@ find_package(PNG)
 
 add_compile_options(-Wall -Wextra -Wshadow -Wconversion -Wpedantic -Werror)
 set_source_files_properties(src/bindings/imgui_impl_opengl2.cpp PROPERTIES COMPILE_FLAGS "-Wno-macro-redefined -Wno-sign-conversion")
+# set(CMAKE_CXX_CPPCHECK "cppcheck" "--enable=warning" "--enable=performance")
 
 add_executable(pathtracing src/main.cpp src/bindings/imgui_impl_glfw.cpp src/bindings/imgui_impl_opengl2.cpp
         include/images.hpp
