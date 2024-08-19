@@ -5,7 +5,7 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "types.h"
+#include "types.hpp"
 
 struct Ray;
 class HitInfo;

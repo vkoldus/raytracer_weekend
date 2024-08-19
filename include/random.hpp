@@ -6,7 +6,7 @@
 #define RANDOM_H
 
 #include <random>
-#include "types.h"
+#include "types.hpp"
 
 inline Vector3 random_in_unit_sphere()
 {

@@ -5,12 +5,14 @@
 #ifndef RENDERING_SERVICE_H
 #define RENDERING_SERVICE_H
 
+#include <future>
+
 #include <png.h>
-#include "images.h"
-#include "path_tracer/camera.h"
-#include "path_tracer/path_tracer.h"
-#include "path_tracer/world.h"
-#include "state/app_state.h"
+#include "images.hpp"
+#include "path_tracer/camera.hpp"
+#include "path_tracer/path_tracer.hpp"
+#include "path_tracer/world.hpp"
+#include "state/app_state.hpp"
 
 struct RenderingService {
     AppState &app_state;
@@ -44,11 +46,36 @@ struct RenderingService {
         render(&app_state, &world, &camera, image1.buffer, 0, (size_t) app_state.image_height);
     }
 
+    void _render_async()
+    {
+        // This is not faster. Probably need a thread pool?
+        // auto threads = 4;
+        // std::vector<std::thread> tasks;
+
+        // for (auto i = 0; i < threads; i++)
+        // {
+        //     auto batch_size = int(app_state.image_height / threads);
+        //     auto batch_start = i * batch_size;
+        //     auto batch_end = (i + 1) * batch_size;
+
+        //     std::cout << batch_start << " - " << batch_end << std::endl;
+
+        //     tasks.push_back(std::thread(render, &app_state, &world, &camera, image1.buffer, batch_start, batch_end));
+        // }
+
+
+        // for (auto &t: tasks)
+        // {
+        //     t.join();
+        // }
+    }
+
     void render_async()
     {
         cancel_render();
 
         rendering_thread = std::thread(render, &app_state, &world, &camera, image1.buffer, 0, app_state.image_height);
+        // _render_async();
     }
 
     void cancel_render()

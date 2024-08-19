@@ -5,9 +5,9 @@
 #ifndef METAL_H
 #define METAL_H
 
-#include "material.h"
-#include "path_tracer/ray.h"
-#include "random.h"
+#include "material.hpp"
+#include "path_tracer/ray.hpp"
+#include "random.hpp"
 
 class Metal : public Material {
     bool _fuzz_enabled = true;

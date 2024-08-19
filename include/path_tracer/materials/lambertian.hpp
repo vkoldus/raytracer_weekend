@@ -7,9 +7,9 @@
 
 #include <random>
 
-#include "material.h"
-#include "path_tracer/ray.h"
-#include "random.h"
+#include "material.hpp"
+#include "path_tracer/ray.hpp"
+#include "random.hpp"
 
 class Lambertian : public Material {
     Color albedo;

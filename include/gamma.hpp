@@ -6,11 +6,11 @@
 #define GAMMA_H
 
 #include <cmath>
-#include "types.h"
+#include "types.hpp"
 
 inline Color linear_to_gamma(const Color &color)
 {
     return color.cwiseSqrt();
 }
 
-#endif //GAMMA_H
+#endif // GAMMA_H

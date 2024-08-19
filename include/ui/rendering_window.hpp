@@ -6,8 +6,8 @@
 #define RENDERING_WINDOW_H
 
 #include <imgui.h>
-#include "path_tracer/rendering_service.h"
-#include "state/app_state.h"
+#include "path_tracer/rendering_service.hpp"
+#include "state/app_state.hpp"
 
 void rendering_window(AppState &app_state, const RenderingService &rendering_service)
 {

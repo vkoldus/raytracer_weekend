@@ -6,7 +6,7 @@
 #define TYPES_H
 
 #include <Eigen/Dense>
-#include "consts.h"
+#include "consts.hpp"
 
 using Eigen::Matrix3d;
 using Eigen::Vector2d;

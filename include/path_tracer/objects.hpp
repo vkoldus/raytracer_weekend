@@ -5,8 +5,8 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
-#include "ray.h"
-#include "types.h"
+#include "ray.hpp"
+#include "types.hpp"
 
 class Material;
 

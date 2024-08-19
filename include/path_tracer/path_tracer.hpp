@@ -9,14 +9,14 @@
 #include <iostream>
 #include <memory>
 
-#include "camera.h"
-#include "gamma.h"
-#include "interpolation.h"
-#include "materials/material.h"
-#include "objects.h"
-#include "state/app_state.h"
-#include "types.h"
-#include "world.h"
+#include "camera.hpp"
+#include "gamma.hpp"
+#include "interpolation.hpp"
+#include "materials/material.hpp"
+#include "objects.hpp"
+#include "state/app_state.hpp"
+#include "types.hpp"
+#include "world.hpp"
 
 using namespace std::chrono_literals;
 

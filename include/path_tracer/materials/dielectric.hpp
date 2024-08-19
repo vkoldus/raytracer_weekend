@@ -5,10 +5,10 @@
 #ifndef DIELECTRIC_H
 #define DIELECTRIC_H
 
-#include "path_tracer/materials/material.h"
-#include "path_tracer/ray.h"
-#include "random.h"
-#include "types.h"
+#include "path_tracer/materials/material.hpp"
+#include "path_tracer/ray.hpp"
+#include "random.hpp"
+#include "types.hpp"
 
 
 class Dielectric : public Material {

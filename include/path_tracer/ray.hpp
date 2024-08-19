@@ -5,7 +5,7 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include "types.h"
+#include "types.hpp"
 
 class Material;
 

@@ -6,8 +6,8 @@
 #define CONFIG_WINDOW_H
 
 #include <imgui.h>
-#include "path_tracer/rendering_service.h"
-#include "state/app_state.h"
+#include "path_tracer/rendering_service.hpp"
+#include "state/app_state.hpp"
 
 void config_window(AppState &app_state, RenderingService &rendering_service, const ImGuiIO &io)
 {

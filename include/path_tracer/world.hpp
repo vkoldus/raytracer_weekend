@@ -5,12 +5,12 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "consts.h"
-#include "path_tracer/materials/dielectric.h"
-#include "path_tracer/materials/lambertian.h"
-#include "path_tracer/materials/metal.h"
-#include "path_tracer/objects.h"
-#include "types.h"
+#include "consts.hpp"
+#include "path_tracer/materials/dielectric.hpp"
+#include "path_tracer/materials/lambertian.hpp"
+#include "path_tracer/materials/metal.hpp"
+#include "path_tracer/objects.hpp"
+#include "types.hpp"
 
 
 using World = std::vector<std::shared_ptr<Object>>;

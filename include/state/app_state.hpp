@@ -6,7 +6,7 @@
 #define APP_STATE_H
 
 #include <Eigen/Dense>
-#include "consts.h"
+#include "consts.hpp"
 
 struct AppState {
     // Window

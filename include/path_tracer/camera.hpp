@@ -6,8 +6,8 @@
 #define CAMERA_H
 
 
-#include "angles.h"
-#include "types.h"
+#include "angles.hpp"
+#include "types.hpp"
 
 struct Camera {
     double focal_length;

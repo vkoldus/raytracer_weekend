@@ -12,25 +12,25 @@ add_compile_options(-Wall -Wextra -Wshadow -Wconversion -Wpedantic -Werror)
 set_source_files_properties(src/bindings/imgui_impl_opengl2.cpp PROPERTIES COMPILE_FLAGS "-Wno-macro-redefined -Wno-sign-conversion")
 
 add_executable(pathtracing src/main.cpp src/bindings/imgui_impl_glfw.cpp src/bindings/imgui_impl_opengl2.cpp
-        include/images.h
-        include/path_tracer/path_tracer.h
-        include/path_tracer/ray.h
-        include/interpolation.h
-        include/path_tracer/camera.h
-        include/types.h
-        include/path_tracer/objects.h
-        include/state/app_state.h
-        include/ui/rendering_window.h
-        include/ui/config_window.h
-        include/path_tracer/rendering_service.h
-        include/consts.h
-        include/random.h
-        include/gamma.h
-        include/path_tracer/materials/material.h
-        include/path_tracer/world.h
-        include/path_tracer/materials/lambertian.h
-        include/path_tracer/materials/metal.h
-        include/path_tracer/materials/dielectric.h
+        include/images.hpp
+        include/path_tracer/path_tracer.hpp
+        include/path_tracer/ray.hpp
+        include/interpolation.hpp
+        include/path_tracer/camera.hpp
+        include/types.hpp
+        include/path_tracer/objects.hpp
+        include/state/app_state.hpp
+        include/ui/rendering_window.hpp
+        include/ui/config_window.hpp
+        include/path_tracer/rendering_service.hpp
+        include/consts.hpp
+        include/random.hpp
+        include/gamma.hpp
+        include/path_tracer/materials/material.hpp
+        include/path_tracer/world.hpp
+        include/path_tracer/materials/lambertian.hpp
+        include/path_tracer/materials/metal.hpp
+        include/path_tracer/materials/dielectric.hpp
 )
 
 include_directories(include)

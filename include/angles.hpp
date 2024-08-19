@@ -5,9 +5,9 @@
 #ifndef ANGLES_H
 #define ANGLES_H
 
-#include "consts.h"
+#include "consts.hpp"
 
-constexpr inline double degrees_to_radians(double degrees)
+constexpr double degrees_to_radians(double degrees)
 {
     return degrees * Pi / 180.0;
 }

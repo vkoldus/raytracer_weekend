@@ -7,10 +7,10 @@
 #include "bindings/imgui_impl_opengl2.h"
 #include "imgui.h"
 
-#include "path_tracer/rendering_service.h"
-#include "state/app_state.h"
-#include "ui/config_window.h"
-#include "ui/rendering_window.h"
+#include "path_tracer/rendering_service.hpp"
+#include "state/app_state.hpp"
+#include "ui/config_window.hpp"
+#include "ui/rendering_window.hpp"
 
 static void glfw_error_callback(int error, const char *description)
 {
