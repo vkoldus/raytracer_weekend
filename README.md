@@ -8,8 +8,9 @@ I have taken a liberty to use some libraries that I wanted to learn, namely:
 
 * ImGUI
 * Eigen
+* libpng
 
-This means the code is a bit simpler (all the matrix math is not implemented but using Eigen instead) and some extra features were added thanks to ImGUI:
+This means the code is a bit simpler (all the matrix math is not implemented but using Eigen instead), allows rendering into png, and some extra features were added thanks to ImGUI:
 
 * Standalone window that presents the result instead of always generating a file.
 * Configuration dialog that allows experimenting with some options and seeing the result right away.
