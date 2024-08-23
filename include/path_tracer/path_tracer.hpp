@@ -45,6 +45,18 @@ void reinitialize_aa_if_needed(const AppState &app_state)
     }
 }
 
+Vector3 sample_from_defocus_disk(Camera &camera)
+{
+    if (camera.defocus_angle_rad > 0)
+    {
+        auto p = random_in_unit_disk();
+        return camera.center() + (p[0] * camera.defocus_disk_u) + (p[1] * camera.defocus_disk_v);
+    } else
+    {
+        return camera.center();
+    }
+}
+
 Color ray_color(const World &objects, const Ray &ray, int depth)
 {
     HitInfo hit;
@@ -109,11 +121,12 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
 
                 for (size_t k = 0; k < aa_sampling_offsets.size(); k++)
                 {
-                    Ray ray{camera->center(),
+                    auto ray_origin = sample_from_defocus_disk(*camera);
+                    Ray ray{ray_origin,
                             (pixel_center + Vector3d{pixel_delta_u[0] * aa_sampling_offsets[k][0],
                                                      pixel_delta_v[1] * aa_sampling_offsets[k][1],
                                                      0.0}) -
-                                    camera->center()};
+                                    ray_origin};
                     color += (linear_to_gamma(ray_color(*world, ray, max_depth)) * 255).cast<int>();
                 }
                 color = (color / aa_sampling_offsets.size()).cast<int>();
@@ -141,5 +154,6 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
 
     app_state->rendering_finished = true;
 }
+
 
 #endif // PATH_TRACER_MAIN_H

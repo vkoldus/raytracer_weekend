@@ -34,10 +34,13 @@ struct RenderingService {
 
     static Camera make_camera(AppState &app_state)
     {
+        std::cout << (Vector3(0, 0, -1) - Vector3(-2, 2, 1)).norm() << std::endl;
         return Camera(Vector3(-2, 2, 1),
                       Vector3(0, 0, -1),
                       Vector3(0, 1, 0),
-                      app_state.vfov_rad,
+                      app_state.focus_distance.value,
+                      app_state.vfov_rad.value,
+                      app_state.defocus_angle_rad.value,
                       (double(app_state.image_width) / app_state.image_height));
     }
 
@@ -101,10 +104,19 @@ struct RenderingService {
             }
 
             // Change the camera parameters
-            if (app_state.vfov_rad != camera.vfov_rad)
+            if (app_state.vfov_rad.has_changed || app_state.focus_distance.has_changed ||
+                app_state.defocus_angle_rad.has_changed)
             {
-                camera =
-                        Camera(camera.look_from, camera.look_at, camera.up, app_state.vfov_rad, app_state.aspect_ratio);
+                camera = Camera(camera.look_from,
+                                camera.look_at,
+                                camera.up,
+                                app_state.focus_distance.value,
+                                app_state.vfov_rad.value,
+                                app_state.defocus_angle_rad.value,
+                                app_state.aspect_ratio);
+                app_state.vfov_rad.reset();
+                app_state.focus_distance.reset();
+                app_state.defocus_angle_rad.reset();
             }
 
             // Move the camera

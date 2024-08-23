@@ -8,6 +8,24 @@
 #include <Eigen/Dense>
 #include "consts.hpp"
 
+template<typename T>
+struct StateValue {
+    StateValue<T>(T value)
+        : value(value),
+          has_changed(true)
+    {
+    }
+
+    void reset()
+    {
+        has_changed = false;
+    }
+
+
+    T value;
+    bool has_changed;
+};
+
 struct AppState {
     // Window
     Eigen::Vector4f clear_color = {0.45f, 0.55f, 0.60f, 1.00f};
@@ -22,7 +40,9 @@ struct AppState {
     bool move_object = false;
     bool antialiasing = true;
     bool metal_fuzz = true;
-    float vfov_rad = float(Pi / 2);
+    StateValue<float> focus_distance{float(3.4)};
+    StateValue<float> vfov_rad{float(20 * Pi / 180.0)};
+    StateValue<float> defocus_angle_rad{float(10 * Pi / 180.0)};
 
     // Rendering status
     float progress = 0.0;

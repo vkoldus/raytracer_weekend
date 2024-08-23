@@ -9,6 +9,22 @@
 #include "path_tracer/rendering_service.hpp"
 #include "state/app_state.hpp"
 
+void inline bind_slider_angle(const char *label, StateValue<float> &sv, float min, float max)
+{
+    if (ImGui::SliderAngle(label, &sv.value, min, max))
+    {
+        sv.has_changed = true;
+    }
+}
+
+void inline bind_slider(const char *label, StateValue<float> &sv, float min, float max)
+{
+    if (ImGui::SliderFloat(label, &sv.value, min, max))
+    {
+        sv.has_changed = true;
+    }
+}
+
 void config_window(AppState &app_state, RenderingService &rendering_service, const ImGuiIO &io)
 {
     ImGui::Begin("Config");
@@ -19,7 +35,9 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
     ImGui::Checkbox("Anti-aliasing", &app_state.antialiasing);
     ImGui::Checkbox("Metal fuzz", &app_state.metal_fuzz);
 
-    ImGui::SliderAngle("VFoV", &app_state.vfov_rad, 20, 120);
+    bind_slider("Focus distance", app_state.focus_distance, 0.0, 4.0);
+    bind_slider_angle("VFoV", app_state.vfov_rad, 20, 120);
+    bind_slider_angle("Defocus angle", app_state.defocus_angle_rad, 0, 20);
 
     if (app_state.live_render)
     {

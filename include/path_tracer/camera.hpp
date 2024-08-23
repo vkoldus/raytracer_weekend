@@ -10,14 +10,16 @@
 #include "types.hpp"
 
 struct Camera {
-    double focal_length;
+    double focus_distance;
     double vfov_rad;
+    double defocus_angle_rad;
 
     Point3 look_from;
     Point3 look_at;
     Vector3 up;
 
     Vector3 w, u, v;
+    Vector3 defocus_disk_u, defocus_disk_v;
 
     fp_t viewport_height;
     fp_t viewport_width;
@@ -26,13 +28,15 @@ struct Camera {
     Point3 viewport_top_left;
     Point3 top_left_pixel;
 
-    Camera(Vector3 look_from, Vector3 look_at, Vector3 up, float vfov_rad, double viewport_aspect_ratio)
-        : focal_length((look_at - look_from).norm()),
+    Camera(Vector3 look_from, Vector3 look_at, Vector3 up, double focus_distance, double vfov_rad,
+           double defocus_angle_rad, double viewport_aspect_ratio)
+        : focus_distance(focus_distance),
           vfov_rad(vfov_rad),
+          defocus_angle_rad(defocus_angle_rad),
           look_from(look_from),
           look_at(look_at),
           up(up),
-          viewport_height(2.0 * std::tan(vfov_rad / 2) * focal_length),
+          viewport_height(2.0 * std::tan(vfov_rad / 2) * focus_distance),
           viewport_width(viewport_height * viewport_aspect_ratio)
     {
         update_basis();
@@ -45,6 +49,10 @@ struct Camera {
         w = (look_from - look_at).normalized();
         u = up.cross(w).normalized();
         v = w.cross(u);
+
+        auto defocus_radius = focus_distance * std::tan(defocus_angle_rad / 2);
+        defocus_disk_u = u * defocus_radius;
+        defocus_disk_v = v * defocus_radius;
     }
 
     void update_viewport()
@@ -55,7 +63,7 @@ struct Camera {
 
     void update_top_left()
     {
-        viewport_top_left = look_from - w * focal_length - viewport_u / 2 - viewport_v / 2;
+        viewport_top_left = look_from - (w * focus_distance) - viewport_u / 2 - viewport_v / 2;
     }
 
 

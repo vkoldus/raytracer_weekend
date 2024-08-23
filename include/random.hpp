@@ -37,6 +37,17 @@ inline Vector3 random_on_hemisphere(const Vector3 &normal)
     }
 }
 
+inline Vector3 random_in_unit_disk()
+{
+    while (true)
+    {
+        auto rnd = Vector2::Random();
+        auto p = Vector3(rnd[0], rnd[1], 0);
+        if (p.squaredNorm() < 1)
+            return p;
+    }
+}
+
 fp_t random_number()
 {
     return std::rand() / (RAND_MAX + 1.0);
