@@ -22,23 +22,22 @@ using namespace std::chrono_literals;
 
 std::vector<Vector2> aa_sampling_offsets;
 
-auto const HI_Q_AA_SAMPLES = 100;
 
 void reinitialize_aa_if_needed(const AppState &app_state)
 {
-    if (app_state.live_render && aa_sampling_offsets.size() != 4)
+    if (app_state.live_render && aa_sampling_offsets.size() != app_state.aa_samples_per_pixel_low_q)
     {
         aa_sampling_offsets.clear();
-        for (int i = 0; i < 4; i++)
+        for (unsigned int i = 0; i < app_state.aa_samples_per_pixel_low_q; i++)
         {
             aa_sampling_offsets.push_back(Vector2::Random() / 2);
         }
     }
 
-    if (!app_state.live_render && aa_sampling_offsets.size() != HI_Q_AA_SAMPLES)
+    if (!app_state.live_render && aa_sampling_offsets.size() != app_state.aa_samples_per_pixel)
     {
         aa_sampling_offsets.clear();
-        for (int i = 0; i < HI_Q_AA_SAMPLES; i++)
+        for (unsigned int i = 0; i < app_state.aa_samples_per_pixel; i++)
         {
             aa_sampling_offsets.push_back(Vector2::Random() / 2);
         }

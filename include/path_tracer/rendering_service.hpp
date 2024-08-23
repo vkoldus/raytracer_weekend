@@ -27,16 +27,17 @@ struct RenderingService {
           rendering_thread(),
           image1(create_image_with_texture(app_state.image_width, app_state.image_height)),
           camera(make_camera(app_state)),
-          world(make_world()),
+          world(make_dev_world()),
+          //   world(make_demo_world()),
           prev_fuzz(true)
     {
     }
 
     static Camera make_camera(AppState &app_state)
     {
-        return Camera(Vector3(-2, 2, 1),
-                      Vector3(0, 0, -1),
-                      Vector3(0, 1, 0),
+        return Camera(app_state.initial_lookfrom,
+                      app_state.initial_lookat,
+                      app_state.initial_vup,
                       app_state.focus_distance.value,
                       app_state.vfov_rad.value,
                       app_state.defocus_angle_rad.value,
