@@ -34,7 +34,6 @@ struct RenderingService {
 
     static Camera make_camera(AppState &app_state)
     {
-        std::cout << (Vector3(0, 0, -1) - Vector3(-2, 2, 1)).norm() << std::endl;
         return Camera(Vector3(-2, 2, 1),
                       Vector3(0, 0, -1),
                       Vector3(0, 1, 0),
@@ -175,7 +174,6 @@ struct RenderingService {
             // Modify materials based on config
             if (prev_fuzz != app_state.metal_fuzz)
             {
-                std::cout << "Changing fuzz to " << app_state.metal_fuzz << std::endl;
                 for (auto object: world)
                 {
                     object->material().enable_fuzz(app_state.metal_fuzz);
