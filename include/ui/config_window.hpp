@@ -35,7 +35,7 @@ void config_window(AppState &app_state, RenderingService &rendering_service, con
     ImGui::Checkbox("Anti-aliasing", &app_state.antialiasing);
     ImGui::Checkbox("Metal fuzz", &app_state.metal_fuzz);
 
-    bind_slider("Focus distance", app_state.focus_distance, 0.0, 4.0);
+    bind_slider("Focus distance", app_state.focus_distance, 0.0, 10.0);
     bind_slider_angle("VFoV", app_state.vfov_rad, 20, 120);
     bind_slider_angle("Defocus angle", app_state.defocus_angle_rad, 0, 20);
 
