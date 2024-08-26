@@ -21,6 +21,11 @@ struct RenderingService {
     Camera camera;
     World world;
     bool prev_fuzz;
+    std::array<std::thread, 6> rendering_threads;
+    std::vector<std::function<void(void)>> rendering_jobs;
+    std::mutex rendering_jobs_mutex;
+    bool should_shutdown;
+    std::chrono::time_point<std::chrono::high_resolution_clock> render_start;
 
     RenderingService(AppState &app_state)
         : app_state(app_state),
@@ -29,8 +34,36 @@ struct RenderingService {
           camera(make_camera(app_state)),
           world(make_dev_world()),
           //   world(make_demo_world()),
-          prev_fuzz(true)
+          prev_fuzz(true),
+          rendering_threads(),
+          rendering_jobs(),
+          should_shutdown(false),
+          render_start()
     {
+        for (size_t i = 0; i < rendering_threads.size(); i++) {
+            rendering_threads[i] = std::thread(std::bind(&RenderingService::rendering_thread_loop, this));
+        }
+    }
+
+    void rendering_thread_loop() {
+        while (!should_shutdown) {
+            std::function<void(void)> job = nullptr;
+            {
+                std::unique_lock<std::mutex> l(rendering_jobs_mutex);
+                
+                if (rendering_jobs.size() > 0) {
+                    job = rendering_jobs.back();
+                    rendering_jobs.pop_back();
+                }
+            }
+            if (job != nullptr) {
+                job();
+            } else {
+                // TODO: An event would be better...
+                std::this_thread::yield();
+                // std::this_thread::sleep_for(std::chrono::microseconds(10));
+            }
+        }
     }
 
     static Camera make_camera(AppState &app_state)
@@ -49,54 +82,48 @@ struct RenderingService {
         render(&app_state, &world, &camera, image1.buffer, 0, (size_t) app_state.image_height);
     }
 
-    void _render_async()
-    {
-        // This is not faster. Probably need a thread pool?
-        // auto threads = 4;
-        // std::vector<std::thread> tasks;
-
-        // for (auto i = 0; i < threads; i++)
-        // {
-        //     auto batch_size = int(app_state.image_height / threads);
-        //     auto batch_start = i * batch_size;
-        //     auto batch_end = (i + 1) * batch_size;
-
-        //     std::cout << batch_start << " - " << batch_end << std::endl;
-
-        //     tasks.push_back(std::thread(render, &app_state, &world, &camera, image1.buffer, batch_start, batch_end));
-        // }
-
-
-        // for (auto &t: tasks)
-        // {
-        //     t.join();
-        // }
-    }
-
     void render_async()
     {
         cancel_render();
 
-        rendering_thread = std::thread(render, &app_state, &world, &camera, image1.buffer, 0, app_state.image_height);
-        // _render_async();
+        app_state.progress = 0;
+        render_start = std::chrono::high_resolution_clock::now();
+
+        auto thread_count = int(rendering_threads.size());
+        std::unique_lock<std::mutex> l(rendering_jobs_mutex);
+        for (auto i = 0; i < thread_count; i++)
+        {
+            auto batch_size = int(app_state.image_height / int(thread_count));
+            auto batch_start = i * batch_size;
+            auto batch_end = i == thread_count-1 ? app_state.image_height + 1 : (i + 1) * batch_size;
+
+            rendering_jobs.emplace_back(
+                std::bind(&render, &app_state, &world, &camera, image1.buffer, batch_start, batch_end)
+            );
+        }
     }
 
     void cancel_render()
     {
-        if (rendering_thread.joinable())
-        {
-            app_state.cancel_rendering = true;
-            rendering_thread.join();
-        }
         app_state.cancel_rendering = false;
     }
 
     void loop_hook(bool is_w_down, bool is_s_down, bool is_a_down, bool is_d_down, bool is_q_down, bool is_e_down,
                    bool is_r_down, bool is_f_down, bool is_t_down, bool is_g_down)
     {
-        if (app_state.rendering_finished)
+        using std::chrono::duration_cast;
+        using std::chrono::milliseconds;
+        using std::chrono::high_resolution_clock;
+
+        upload_texture(image1);
+
+        if (app_state.progress == app_state.image_height)
         {
-            upload_texture(image1);
+            if (render_start != high_resolution_clock::time_point()) {
+                std::cout << "Rendering took " << duration_cast<milliseconds>(high_resolution_clock::now() - render_start) << "\n";
+                render_start = high_resolution_clock::time_point();
+            }
+
             // Move one of the objects
             if (app_state.move_object)
             {
@@ -188,6 +215,10 @@ struct RenderingService {
     void shutdown()
     {
         cancel_render();
+        should_shutdown = true;
+        for (auto &t : rendering_threads) {
+            t.join();
+        }
         delete_image_with_texture(image1);
     }
 

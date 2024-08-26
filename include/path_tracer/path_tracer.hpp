@@ -146,12 +146,8 @@ void render(AppState *app_state, const World *world, Camera *camera, uint32_t *b
             }
         }
 
-        app_state->progress = float(j / (app_state->image_height - 1.0));
-        // std::this_thread::sleep_for(10ms);
-        // std::this_thread::yield();
+        app_state->progress.increase();
     }
-
-    app_state->rendering_finished = true;
 }
 
 

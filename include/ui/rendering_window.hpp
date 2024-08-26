@@ -21,7 +21,7 @@ void rendering_window(AppState &app_state, const RenderingService &rendering_ser
     availableSize.y = (float) (availableSize.x / app_state.aspect_ratio);
 
     ImGui::Image((void *) (intptr_t) rendering_service.gl_texture(), availableSize);
-    ImGui::ProgressBar(app_state.progress, ImVec2(ImGui::GetFontSize() * 25, 0.0f));
+    ImGui::ProgressBar(float(app_state.progress.value) / app_state.image_height, ImVec2(ImGui::GetFontSize() * 25, 0.0f));
 
     ImGui::End();
 

@@ -26,6 +26,30 @@ struct StateValue {
     bool has_changed;
 };
 
+
+template<typename T>
+struct SyncedPrimitive {
+    T value;
+    std::mutex _mutex;
+
+    SyncedPrimitive(T&& value): value(value) {
+    }
+
+    void operator=(T new_value) {
+        std::unique_lock<std::mutex> l(_mutex);
+        value = new_value;
+    }
+
+    bool operator==(T lval) {
+        return value == lval;
+    }
+
+    void increase() {
+        std::unique_lock<std::mutex> l(_mutex);
+        this->value++;
+    }
+};
+
 struct AppState {
     // Window
     Eigen::Vector4f clear_color = {0.45f, 0.55f, 0.60f, 1.00f};
@@ -66,9 +90,8 @@ struct AppState {
     bool metal_fuzz = true;
 
     // Rendering status
-    float progress = 0.0;
+    SyncedPrimitive<int> progress = 0;
     bool cancel_rendering = false;
-    bool rendering_finished = false;
 };
 
 #endif // APP_STATE_H
